@@ -1,5 +1,5 @@
-#ifndef __WIN32_H__
-#define __WIN32_H__
+#pragma once
+
 #include <windows.h>
 #include <stdio.h>
 #include <wincrypt.h>
@@ -26,4 +26,3 @@ typedef int64_t s64;
 
 #pragma comment(lib, "shlwapi.lib")
 
-#endif //__WIN32_H__

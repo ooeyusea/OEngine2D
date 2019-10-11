@@ -1,17 +1,10 @@
-#ifndef __util_h__
-#define __util_h__
-#ifdef WIN32
-#include "win32.h"
-#else
-#include "linux.h"
-#endif
+#pragma once
 
-#define MALLOC malloc
-#define FREE free
-#define REALLOC realloc
-#define NEW new
-#define DEL delete
-#define ALLOCATOR(T) std::allocator<T>
+#ifdef WIN32
+#include "detail/windows/win32.h"
+#else
+#include "detail/linux/linux.h"
+#endif
 
 #ifdef __cplusplus
 extern "C" {
@@ -58,8 +51,27 @@ extern "C" {
 #define SafeMemcpy __OMemcpy
 #define SafeMemset __OMemset
 
-#include "vulkan/vulkan.h"
+#define GLFW_INCLUDE_VULKAN
+#define GLFW_EXPOSE_NATIVE_WIN32
+#include <GLFW/glfw3.h>
+#include <GLFW/glfw3native.h>
+
+#define GLM_FORCE_RADIANS
+#define GLM_FORCE_DEPTH_ZERO_TO_ONE
+#include <glm/vec4.hpp>
+#include <glm/mat4x4.hpp>
 
 #define FLOAT_PRECISION 0.000001f
 
-#endif //__util_h__
+#include <iostream>
+#include <string>
+#include <vector>
+#include <list>
+#include <map>
+#include <set>
+#include <thread>
+#include <unordered_map>
+#include <unordered_set>
+#include <optional>
+#include <functional>
+#include <algorithm>
