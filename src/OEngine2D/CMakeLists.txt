@@ -2,6 +2,7 @@ INCLUDE_DIRECTORIES(
 	${Vulkan_INCLUDE_DIRS}
 	"${PROJECT_SOURCE_DIR}/thirdparty/include"
     "${CMAKE_CURRENT_SOURCE_DIR}/util/"
+	"${CMAKE_CURRENT_SOURCE_DIR}/"
 )
 
 SET(KERNEL
@@ -13,6 +14,15 @@ SET(KERNEL
 SET(UTIL
     "${CMAKE_CURRENT_SOURCE_DIR}/util/util.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/util/util.cpp"
+)
+
+SET(TINYXML
+    "${CMAKE_CURRENT_SOURCE_DIR}/util/tinyxml/tinystr.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/util/tinyxml/tinystr.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/util/tinyxml/tinyxml.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/util/tinyxml/tinyxml.cpp"
+	"${CMAKE_CURRENT_SOURCE_DIR}/util/tinyxml/tinyxmlerror.cpp"
+	"${CMAKE_CURRENT_SOURCE_DIR}/util/tinyxml/tinyxmlparser.cpp"
 )
 
 IF(WIN32)
@@ -30,13 +40,30 @@ SET(DETAIL
 )
 ENDIF(UNIX)
 
+SET(GRAPH
+	"${CMAKE_CURRENT_SOURCE_DIR}/graph/Resource.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/graph/Pipeline.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/graph/Pipeline.cpp"
+)
+
+SET(SYS
+    "${CMAKE_CURRENT_SOURCE_DIR}/system/FileSystem.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/system/FileSystem.cpp"
+)
+
 SOURCE_GROUP(src\\util FILES ${UTIL})
 SOURCE_GROUP(src\\util\\detail FILES ${DETAIL})
+SOURCE_GROUP(src\\util\\tinyxml FILES ${TINYXML})
+SOURCE_GROUP(src\\graph FILES ${GRAPH})
+SOURCE_GROUP(src\\system FILES ${SYS})
 SOURCE_GROUP(src FILES ${KERNEL})
 
 ADD_EXECUTABLE(OEngine2D
     ${UTIL}
 	${DETAIL}
+	${TINYXML}
+	${GRAPH}
+	${SYS}
     ${KERNEL}
 )
 
@@ -44,6 +71,8 @@ IF(WIN32)
 TARGET_LINK_LIBRARIES(OEngine2D 
 	debug "${PROJECT_SOURCE_DIR}/thirdparty/libs/debug/glfw3dll.lib"
 	optimized "${PROJECT_SOURCE_DIR}/thirdparty/libs/release/glfw3dll.lib"
+	debug "${PROJECT_SOURCE_DIR}/thirdparty/libs/debug/shaderc_combined.lib"
+	optimized "${PROJECT_SOURCE_DIR}/thirdparty/libs/release/shaderc_combined.lib"
 	${Vulkan_LIBRARY}
 )
 ENDIF(WIN32)
