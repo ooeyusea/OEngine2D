@@ -8,6 +8,8 @@ INCLUDE_DIRECTORIES(
 SET(KERNEL
     "${CMAKE_CURRENT_SOURCE_DIR}/Application.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/Application.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/Config.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/Config.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/main.cpp"
 )
 
@@ -44,6 +46,22 @@ SET(GRAPH
 	"${CMAKE_CURRENT_SOURCE_DIR}/graph/Resource.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/graph/Pipeline.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/graph/Pipeline.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/graph/Graph.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/graph/Graph.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/graph/DrawAble.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/graph/DrawAble.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/graph/Window.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/graph/Window.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/graph/Instance.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/graph/Instance.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/graph/PhysicalDevice.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/graph/PhysicalDevice.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/graph/LogicalDevice.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/graph/LogicalDevice.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/graph/Surface.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/graph/Surface.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/graph/SwapChain.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/graph/SwapChain.cpp"
 )
 
 SET(SYS

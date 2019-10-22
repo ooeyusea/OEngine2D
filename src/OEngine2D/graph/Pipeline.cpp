@@ -2,10 +2,11 @@
 #include "system/FileSystem.h"
 #include "tinyxml/tinyxml.h"
 
+/*
 namespace oengine2d {
-	bool Pipeline::Load(VkDevice device) {
+	bool Pipeline::Load() {
 		std::string data;
-		if (!FileSystem::Instance().ReadFile(_path, data)) {
+		if (!FileSystem::GetInstance().ReadFile(_path, data)) {
 			return false;
 		}
 
@@ -19,7 +20,7 @@ namespace oengine2d {
 		std::vector<VkPipelineShaderStageCreateInfo> shaderStages;
 		for (auto* elem = doc.FirstChildElement("shader"); elem; elem = elem->NextSiblingElement("shader")) {
 			if (strcmp(elem->Attribute("type"), "vert") == 0) {
-				VkShaderModule shaderModule = CreateShader(device, elem->Attribute("name"), shaderc_glsl_vertex_shader, "main", elem->FirstChild()->Value(), {});
+				VkShaderModule shaderModule = CreateShader(Graph::Instance().GetLocalDevice(), elem->Attribute("name"), shaderc_glsl_vertex_shader, "main", elem->FirstChild()->Value(), {});
 				if (!shaderModule) {
 					return false;
 				}
@@ -31,7 +32,7 @@ namespace oengine2d {
 				shaderStages.back().pName = "main";
 			}
 			else if (strcmp(elem->Attribute("type"), "frag") == 0) {
-				VkShaderModule shaderModule = CreateShader(device, elem->Attribute("name"), shaderc_glsl_fragment_shader, "main", elem->FirstChild()->Value(), {});
+				VkShaderModule shaderModule = CreateShader(GraphDevice::Instance().GetLocalDevice(), elem->Attribute("name"), shaderc_glsl_fragment_shader, "main", elem->FirstChild()->Value(), {});
 				if (!shaderModule) {
 					return false;
 				}
@@ -59,14 +60,14 @@ namespace oengine2d {
 		VkViewport viewport = {};
 		viewport.x = 0.0f;
 		viewport.y = 0.0f;
-		viewport.width = (float)swapChainExtent.width;
-		viewport.height = (float)swapChainExtent.height;
+		viewport.width = (float)GraphDevice::Instance().GetSwapChainExtend().width;
+		viewport.height = (float)GraphDevice::Instance().GetSwapChainExtend().height;
 		viewport.minDepth = 0.0f;
 		viewport.maxDepth = 1.0f;
 
 		VkRect2D scissor = {};
 		scissor.offset = { 0, 0 };
-		scissor.extent = swapChainExtent;
+		scissor.extent = GraphDevice::Instance().GetSwapChainExtend();
 
 		VkPipelineViewportStateCreateInfo viewportState = {};
 		viewportState.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
@@ -125,12 +126,12 @@ namespace oengine2d {
 		pipelineLayoutInfo.pushConstantRangeCount = 0; // Optional
 		pipelineLayoutInfo.pPushConstantRanges = 0; // Optional
 
-		if (vkCreatePipelineLayout(device, &pipelineLayoutInfo, nullptr, &_pipelineLayout) != VK_SUCCESS) {
+		if (vkCreatePipelineLayout(GraphDevice::Instance().GetLocalDevice(), &pipelineLayoutInfo, nullptr, &_pipelineLayout) != VK_SUCCESS) {
 			return false;
 		}
 
 		VkAttachmentDescription colorAttachment = {};
-		colorAttachment.format = swapChainImageFormat;
+		colorAttachment.format = GraphDevice::Instance().GetSwapChainImageFormat();
 		colorAttachment.samples = VK_SAMPLE_COUNT_1_BIT;
 		colorAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
 		colorAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
@@ -148,14 +149,24 @@ namespace oengine2d {
 		subpass.colorAttachmentCount = 1;
 		subpass.pColorAttachments = &colorAttachmentRef;
 
+		VkSubpassDependency dependency = {};
+		dependency.srcSubpass = VK_SUBPASS_EXTERNAL;
+		dependency.dstSubpass = 0;
+		dependency.srcStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+		dependency.srcAccessMask = 0;
+		dependency.dstStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+		dependency.dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_READ_BIT | VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
+
 		VkRenderPassCreateInfo renderPassInfo = {};
 		renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
 		renderPassInfo.attachmentCount = 1;
 		renderPassInfo.pAttachments = &colorAttachment;
 		renderPassInfo.subpassCount = 1;
 		renderPassInfo.pSubpasses = &subpass;
+		renderPassInfo.dependencyCount = 1;
+		renderPassInfo.pDependencies = &dependency;
 
-		if (vkCreateRenderPass(device, &renderPassInfo, nullptr, &_renderPass) != VK_SUCCESS) {
+		if (vkCreateRenderPass(GraphDevice::Instance().GetLocalDevice(), &renderPassInfo, nullptr, &_renderPass) != VK_SUCCESS) {
 			return false;
 		}
 
@@ -177,27 +188,24 @@ namespace oengine2d {
 		pipelineInfo.basePipelineHandle = VK_NULL_HANDLE; // Optional
 		pipelineInfo.basePipelineIndex = -1; // Optional
 
-		if (vkCreateGraphicsPipelines(device, VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &_graphicsPipeline) != VK_SUCCESS) {
+		if (vkCreateGraphicsPipelines(GraphDevice::Instance().GetLocalDevice(), VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &_graphicsPipeline) != VK_SUCCESS) {
 			return false;
 		}
 
-		_swapChainFramebuffers.resize(swapChainImageViews.size());
-		for (size_t i = 0; i < swapChainImageViews.size(); i++) {
-			VkImageView attachments[] = {
-				swapChainImageViews[i]
-			};
+		for (VkImageView swapChainImageView : GraphDevice::Instance().GetSwapChainImageViews()) {
+			VkImageView attachments[] = { swapChainImageView };
 
 			VkFramebufferCreateInfo framebufferInfo = {};
 			framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
 			framebufferInfo.renderPass = _renderPass;
 			framebufferInfo.attachmentCount = 1;
 			framebufferInfo.pAttachments = attachments;
-			framebufferInfo.width = swapChainExtent.width;
-			framebufferInfo.height = swapChainExtent.height;
+			framebufferInfo.width = GraphDevice::Instance().GetSwapChainExtend().width;
+			framebufferInfo.height = GraphDevice::Instance().GetSwapChainExtend().height;
 			framebufferInfo.layers = 1;
 
 			VkFramebuffer frameBuffer;
-			if (vkCreateFramebuffer(device, &framebufferInfo, nullptr, &frameBuffer) != VK_SUCCESS) {
+			if (vkCreateFramebuffer(GraphDevice::Instance().GetLocalDevice(), &framebufferInfo, nullptr, &frameBuffer) != VK_SUCCESS) {
 				return false;
 			}
 
@@ -207,19 +215,19 @@ namespace oengine2d {
 		return true;
 	}
 
-	void Pipeline::Release(VkDevice device) {
+	void Pipeline::Release() {
 		for (size_t i = 0; i < _swapChainFramebuffers.size(); i++) {
-			vkDestroyFramebuffer(device, _swapChainFramebuffers[i], nullptr);
+			vkDestroyFramebuffer(GraphDevice::Instance().GetLocalDevice(), _swapChainFramebuffers[i], nullptr);
 		}
 
 		if (_graphicsPipeline)
-			vkDestroyPipeline(device, _graphicsPipeline, nullptr);
+			vkDestroyPipeline(GraphDevice::Instance().GetLocalDevice(), _graphicsPipeline, nullptr);
 
 		if (_pipelineLayout)
-			vkDestroyPipelineLayout(device, _pipelineLayout, nullptr);
+			vkDestroyPipelineLayout(GraphDevice::Instance().GetLocalDevice(), _pipelineLayout, nullptr);
 
 		if (_renderPass)
-			vkDestroyRenderPass(device, _renderPass, nullptr);
+			vkDestroyRenderPass(GraphDevice::Instance().GetLocalDevice(), _renderPass, nullptr);
 	}
 
 	VkShaderModule Pipeline::CreateShader(VkDevice device, const std::string& sourceName, shaderc_shader_kind kind, const char* entry, const std::string& source, const std::map<std::string, std::string>& defines) {
@@ -250,3 +258,4 @@ namespace oengine2d {
 		return shaderModule;
 	}
 }
+*/

@@ -8,8 +8,12 @@ namespace oengine2d {
 		Pipeline() : Resource(ResourceType::RT_PIPELINE) {}
 		~Pipeline() {}
 
-		virtual bool Load(VkDevice device);
-		virtual void Release(VkDevice device);
+		virtual bool Load();
+		virtual void Release();
+
+		inline VkPipeline GetPipeline() const { return _graphicsPipeline; }
+		inline VkRenderPass GetRenderPass() const { return _renderPass; }
+		inline const std::vector<VkFramebuffer>& GetFrameBuffers() const { return _swapChainFramebuffers; }
 
 	private:
 		VkShaderModule CreateShader(VkDevice device, const std::string& sourceName, shaderc_shader_kind kind, const char * entry, const std::string& source, const std::map<std::string, std::string>& defines);

@@ -75,3 +75,22 @@ extern "C" {
 #include <optional>
 #include <functional>
 #include <algorithm>
+
+#define CHECK(p, msg) \
+	if (!(p)) {\
+		std::cout << msg << std::endl; \
+		return false;\
+	}\
+
+#define INIT_STEP(f, msg) \
+	if (!(f)) {\
+		std::cout << msg << " failed" << std::endl; \
+		break;\
+	}\
+	std::cout << msg << " success" << std::endl
+
+#define SAFE_DELETE(p) \
+if (p) {\
+	delete p;\
+	p = nullptr;\
+}
