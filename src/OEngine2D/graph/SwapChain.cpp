@@ -16,6 +16,28 @@ namespace oengine2d {
 		return true;
 	}
 
+	bool SwapChain::AcquireNextImage(VkSemaphore waitSemaphore, VkFence fence) {
+		CHECK(vkWaitForFences(_device, 1, &fence, VK_TRUE, std::numeric_limits<uint64_t>::max()) == VK_SUCCESS, "failed to wait fence");
+		CHECK(vkResetFences(_device, 1, &fence) == VK_SUCCESS, "failed to reset fences");
+
+		CHECK(vkAcquireNextImageKHR(_device, _swapChain, UINT64_MAX, waitSemaphore, VK_NULL_HANDLE, &_imageIndex) == VK_SUCCESS, "failed to acquire swapchain image");
+		return true;
+	}
+
+	bool SwapChain::Present(VkSemaphore waitSemaphore) {
+		VkPresentInfoKHR presentInfo = {};
+		presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
+
+		presentInfo.waitSemaphoreCount = 1;
+		presentInfo.pWaitSemaphores = &waitSemaphore;
+		presentInfo.swapchainCount = 1;
+		presentInfo.pSwapchains = &_swapChain;
+		presentInfo.pImageIndices = &_imageIndex;
+		presentInfo.pResults = nullptr; // Optional
+		CHECK(vkQueuePresentKHR(_device.GetGraphicsQueue(), &presentInfo) == VK_SUCCESS, "failed to present");
+		return true;
+	}
+
 	VkSurfaceFormatKHR SwapChain::ChooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats) {
 		if (availableFormats.size() == 1 && availableFormats[0].format == VK_FORMAT_UNDEFINED) {
 			return { VK_FORMAT_B8G8R8A8_UNORM, VK_COLOR_SPACE_SRGB_NONLINEAR_KHR };

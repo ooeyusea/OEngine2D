@@ -21,6 +21,11 @@ namespace oengine2d {
 		inline int32_t GetComputeFamily() const { return _computeFamily; }
 		inline int32_t GetTransferFamily() const { return _transferFamily; }
 
+		inline VkQueue GetGraphicsQueue() const { return _graphicsQueue; }
+		inline VkQueue GetPresentQueue() const { return _presentQueue; }
+		inline VkQueue GetComputeQueue() const { return _computeQueue; }
+		inline VkQueue GetTransferQueue() const { return _transferQueue; }
+
 	private:
 		bool CreateDevice();
 		void DestroyDevice();

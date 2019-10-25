@@ -15,8 +15,12 @@ namespace oengine2d {
 		inline uint32_t GetWindowWidth() const { return _width; }
 		inline uint32_t GetWindowHeight() const { return _height; }
 
+		inline uint32_t GetMaxFramesInFlight() const { return _maxFramesInFlight; }
+
 	private:
 		uint32_t _width = 800;
 		uint32_t _height = 600;
+
+		uint32_t _maxFramesInFlight = 3;
 	};
 }

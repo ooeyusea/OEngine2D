@@ -12,6 +12,12 @@ namespace oengine2d {
 
 		bool Create();
 
+		bool AcquireNextImage(VkSemaphore waitSemaphore, VkFence fence);
+		bool Present(VkSemaphore waitSemaphore);
+
+		inline uint32_t GetImageIndex() const { return _imageIndex; }
+		inline size_t GetImageCount() const { return _images.size(); }
+
 	private:
 		VkSurfaceFormatKHR ChooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats);
 		VkPresentModeKHR ChooseSwapPresentMode(const std::vector<VkPresentModeKHR> availablePresentModes);
@@ -33,5 +39,7 @@ namespace oengine2d {
 
 		std::vector<VkImage> _images;
 		std::vector<VkImageView> _imageViews;
+
+		uint32_t _imageIndex = 0;
 	};
 }

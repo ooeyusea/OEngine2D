@@ -62,6 +62,10 @@ SET(GRAPH
     "${CMAKE_CURRENT_SOURCE_DIR}/graph/Surface.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/graph/SwapChain.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/graph/SwapChain.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/graph/CommandPool.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/graph/CommandPool.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/graph/CommandBuffer.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/graph/CommandBuffer.cpp"
 )
 
 SET(SYS
