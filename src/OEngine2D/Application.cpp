@@ -2,6 +2,7 @@
 #include "system/FileSystem.h"
 #include "graph/Window.h"
 #include "graph/Graph.h"
+#include "graph/stage/RenderStageBuilder.h"
 #include "Config.h"
 
 namespace oengine2d {
@@ -11,6 +12,7 @@ namespace oengine2d {
 			INIT_STEP(FileSystem::GetInstance().Init(), "init file system");
 			INIT_STEP(Window::GetInstance().Init(), "init window");
 			INIT_STEP(Graph::GetInstance().Init(), "init graph");
+			INIT_STEP(RenderStageBuilder().Build(), "build render stage");
 			
 			MainLoop();
 		} while (false);

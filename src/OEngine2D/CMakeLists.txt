@@ -66,6 +66,19 @@ SET(GRAPH
     "${CMAKE_CURRENT_SOURCE_DIR}/graph/CommandPool.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/graph/CommandBuffer.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/graph/CommandBuffer.cpp"
+	"${CMAKE_CURRENT_SOURCE_DIR}/graph/RenderStage.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/graph/RenderStage.cpp"
+)
+
+SET(GRAPH_STAGE
+	"${CMAKE_CURRENT_SOURCE_DIR}/graph/stage/PreDepthStage.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/graph/stage/PreDepthStage.cpp"
+	"${CMAKE_CURRENT_SOURCE_DIR}/graph/stage/LightCullStage.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/graph/stage/LightCullStage.cpp"
+	"${CMAKE_CURRENT_SOURCE_DIR}/graph/stage/ForwardStage.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/graph/stage/ForwardStage.cpp"
+	"${CMAKE_CURRENT_SOURCE_DIR}/graph/stage/RenderStageBuilder.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/graph/stage/RenderStageBuilder.cpp"
 )
 
 SET(SYS
@@ -77,6 +90,7 @@ SOURCE_GROUP(src\\util FILES ${UTIL})
 SOURCE_GROUP(src\\util\\detail FILES ${DETAIL})
 SOURCE_GROUP(src\\util\\tinyxml FILES ${TINYXML})
 SOURCE_GROUP(src\\graph FILES ${GRAPH})
+SOURCE_GROUP(src\\graph\\stage FILES ${GRAPH_STAGE})
 SOURCE_GROUP(src\\system FILES ${SYS})
 SOURCE_GROUP(src FILES ${KERNEL})
 
@@ -85,6 +99,7 @@ ADD_EXECUTABLE(OEngine2D
 	${DETAIL}
 	${TINYXML}
 	${GRAPH}
+	${GRAPH_STAGE}
 	${SYS}
     ${KERNEL}
 )

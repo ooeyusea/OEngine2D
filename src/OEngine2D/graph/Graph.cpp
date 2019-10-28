@@ -7,6 +7,7 @@
 #include "Config.h"
 #include "CommandPool.h"
 #include "CommandBuffer.h"
+#include "RenderStage.h"
 
 namespace oengine2d {
 	bool Graph::Init() {
@@ -47,13 +48,8 @@ namespace oengine2d {
 
 	void Graph::Update() {
 		_swapChain->AcquireNextImage(_imageAvailableSemaphores[_currentFrame], _inFlightFences[_currentFrame]);
-		auto& commandBuffer = _commandBuffers[_swapChain->GetImageIndex()];
-		commandBuffer->Begin(VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT);
-
-		DrawFrame(*commandBuffer);
-
-		commandBuffer->End();
-		commandBuffer->Submit(_imageAvailableSemaphores[_currentFrame], _renderFinishedSemaphores[_currentFrame], _inFlightFences[_currentFrame]);
+		for (auto itr = _stages.begin(); itr != _stages.end(); ++itr)
+			(*itr)->Update();
 		_swapChain->Present(_renderFinishedSemaphores[_currentFrame]);
 		_currentFrame = (_currentFrame + 1) % _inFlightFences.size();
 	}
@@ -86,20 +82,12 @@ namespace oengine2d {
 			VkFence inFlightFence;
 			CHECK(vkCreateFence(*_logicalDevice, &fenceInfo, nullptr, &inFlightFence) == VK_SUCCESS, "failed to create synchronization objects for a frame!");
 			_inFlightFences.emplace_back(inFlightFence);
-
-			CommandBuffer* commandBuffer = new CommandBuffer(*_logicalDevice, *GetCommandPool());
-			CHECK(commandBuffer->Create(), "failed to create command buffer!");
-			_commandBuffers.emplace_back(commandBuffer);
 		}
 
 		return true;
 	}
 
 	void Graph::DestroySyncObjects() {
-		for (auto commandBuffer : _commandBuffers)
-			delete commandBuffer;
-		_commandBuffers.clear();
-
 		for (auto fence : _inFlightFences)
 			vkDestroyFence(*_logicalDevice, fence, nullptr);
 		_inFlightFences.clear();
@@ -113,8 +101,23 @@ namespace oengine2d {
 		_renderFinishedSemaphores.clear();
 	}
 
+	bool Graph::AddRenderStage(RenderStage* stage) {
+		CHECK(stage->Create(), "create stage failed");
+		if (!_stages.empty()) {
+			_stages.back()->SetNext(stage);
+			stage->SetPrev(_stages.back());
+		}
+
+		_stages.emplace_back(stage);
+		return true;
+	}
+
 	LogicalDevice& Graph::GetLogicalDevice() {
 		return *_logicalDevice;
+	}
+
+	SwapChain& Graph::GetSwapChain() {
+		return *_swapChain;
 	}
 
 	Graph::CommandPoolPtr& Graph::GetCommandPool() {

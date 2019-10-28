@@ -11,6 +11,7 @@ namespace oengine2d {
 	class SwapChain;
 	class CommandPool;
 	class CommandBuffer;
+	class RenderStage;
 	class Graph : public Singleton<Graph> {
 		typedef CommandPool* CommandPoolPtr;
 	public:
@@ -27,8 +28,16 @@ namespace oengine2d {
 		bool CreateSyncObjects();
 		void DestroySyncObjects();
 
+		bool AddRenderStage(RenderStage * stage);
+
 		LogicalDevice& GetLogicalDevice();
+		SwapChain& GetSwapChain();
 		CommandPoolPtr& GetCommandPool();
+
+		size_t GetCurrentFrame() const { return _currentFrame; }
+		inline VkSemaphore GetReadyDrawSemaphore(size_t frame) const { return _imageAvailableSemaphores[frame]; }
+		inline VkSemaphore GetRenderFinishSemaphore(size_t frame) const { return _renderFinishedSemaphores[frame]; }
+		inline VkFence GetFlightFence(size_t frame) const { return _inFlightFences[frame]; }
 
 	private:
 		void DrawFrame(CommandBuffer& commandBuffer);
@@ -40,13 +49,12 @@ namespace oengine2d {
 		LogicalDevice* _logicalDevice = nullptr;
 		SwapChain* _swapChain = nullptr;
 
-		std::vector<CommandBuffer*> _commandBuffers;
-
-		uint32_t _currentImageIndex = 0;
 		std::vector<VkSemaphore> _imageAvailableSemaphores;
 		std::vector<VkSemaphore> _renderFinishedSemaphores;
 		std::vector<VkFence> _inFlightFences;
 		size_t _currentFrame = 0;
+		
+		std::vector<RenderStage*> _stages;
 
 		std::mutex _mutex;
 	};
