@@ -30,6 +30,7 @@ namespace oengine2d {
 
 		bool AddRenderStage(RenderStage * stage);
 
+		PhysicalDevice& GetPhysicalDevice();
 		LogicalDevice& GetLogicalDevice();
 		SwapChain& GetSwapChain();
 		CommandPoolPtr& GetCommandPool();

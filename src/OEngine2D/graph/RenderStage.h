@@ -7,7 +7,7 @@ namespace oengine2d {
 	class RenderStage {
 	public:
 		RenderStage() {}
-		~RenderStage();
+		virtual ~RenderStage();
 
 		bool Create();
 		void Update();

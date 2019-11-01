@@ -68,6 +68,21 @@ SET(GRAPH
     "${CMAKE_CURRENT_SOURCE_DIR}/graph/CommandBuffer.cpp"
 	"${CMAKE_CURRENT_SOURCE_DIR}/graph/RenderStage.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/graph/RenderStage.cpp"
+	"${CMAKE_CURRENT_SOURCE_DIR}/graph/RenderPass.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/graph/RenderPass.cpp"
+	"${CMAKE_CURRENT_SOURCE_DIR}/graph/FrameBuffer.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/graph/FrameBuffer.cpp"
+)
+
+SET(GRAPH_MATERIAL
+	"${CMAKE_CURRENT_SOURCE_DIR}/graph/material/VertexBuffer.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/graph/material/VertexBuffer.cpp"
+	"${CMAKE_CURRENT_SOURCE_DIR}/graph/material/IndexBuffer.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/graph/material/IndexBuffer.cpp"
+	"${CMAKE_CURRENT_SOURCE_DIR}/graph/material/Image.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/graph/material/Image.cpp"
+	"${CMAKE_CURRENT_SOURCE_DIR}/graph/material/Texture2D.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/graph/material/Texture2D.cpp"
 )
 
 SET(GRAPH_STAGE
@@ -90,6 +105,7 @@ SOURCE_GROUP(src\\util FILES ${UTIL})
 SOURCE_GROUP(src\\util\\detail FILES ${DETAIL})
 SOURCE_GROUP(src\\util\\tinyxml FILES ${TINYXML})
 SOURCE_GROUP(src\\graph FILES ${GRAPH})
+SOURCE_GROUP(src\\graph\\material FILES ${GRAPH_MATERIAL})
 SOURCE_GROUP(src\\graph\\stage FILES ${GRAPH_STAGE})
 SOURCE_GROUP(src\\system FILES ${SYS})
 SOURCE_GROUP(src FILES ${KERNEL})
@@ -99,6 +115,7 @@ ADD_EXECUTABLE(OEngine2D
 	${DETAIL}
 	${TINYXML}
 	${GRAPH}
+	${GRAPH_MATERIAL}
 	${GRAPH_STAGE}
 	${SYS}
     ${KERNEL}
@@ -110,6 +127,8 @@ TARGET_LINK_LIBRARIES(OEngine2D
 	optimized "${PROJECT_SOURCE_DIR}/thirdparty/libs/release/glfw3dll.lib"
 	debug "${PROJECT_SOURCE_DIR}/thirdparty/libs/debug/shaderc_combined.lib"
 	optimized "${PROJECT_SOURCE_DIR}/thirdparty/libs/release/shaderc_combined.lib"
+	debug "${PROJECT_SOURCE_DIR}/thirdparty/libs/debug/FreeImaged.lib"
+	optimized "${PROJECT_SOURCE_DIR}/thirdparty/libs/release/FreeImage.lib"
 	${Vulkan_LIBRARY}
 )
 ENDIF(WIN32)

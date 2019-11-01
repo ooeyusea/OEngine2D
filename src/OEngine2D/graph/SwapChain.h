@@ -18,6 +18,9 @@ namespace oengine2d {
 		inline uint32_t GetImageIndex() const { return _imageIndex; }
 		inline size_t GetImageCount() const { return _images.size(); }
 
+		inline VkFormat GetColorFormat() const { return _imageFormat; }
+		inline VkFormat GetDepthFormat() const { return _depthFormat; }
+
 	private:
 		VkSurfaceFormatKHR ChooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats);
 		VkPresentModeKHR ChooseSwapPresentMode(const std::vector<VkPresentModeKHR> availablePresentModes);
@@ -34,6 +37,7 @@ namespace oengine2d {
 
 		VkExtent2D _extent = {};
 		VkFormat _imageFormat = VK_FORMAT_UNDEFINED;
+		VkFormat _depthFormat = VK_FORMAT_UNDEFINED;
 
 		VkSwapchainKHR _swapChain = nullptr;
 

@@ -112,6 +112,10 @@ namespace oengine2d {
 		return true;
 	}
 
+	PhysicalDevice& Graph::GetPhysicalDevice() {
+		return *_physicalDevice;
+	}
+
 	LogicalDevice& Graph::GetLogicalDevice() {
 		return *_logicalDevice;
 	}

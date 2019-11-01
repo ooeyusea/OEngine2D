@@ -12,6 +12,8 @@ namespace oengine2d {
 
 		bool Create();
 
+		int32_t FindMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);
+
 		operator const VkPhysicalDevice& () const { return _physicalDevice; }
 		const VkPhysicalDeviceProperties& GetProperties() const { return _deviceProperties; }
 		const VkPhysicalDeviceFeatures& GetFeatures() const { return _deviceFeatures; }
@@ -29,5 +31,6 @@ namespace oengine2d {
 
 		VkPhysicalDeviceProperties _deviceProperties = {};
 		VkPhysicalDeviceFeatures _deviceFeatures = {};
+		VkPhysicalDeviceMemoryProperties _memProperties = {};
 	};
 }

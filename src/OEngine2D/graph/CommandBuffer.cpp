@@ -1,19 +1,22 @@
 #include "CommandBuffer.h"
 #include "LogicalDevice.h"
 #include "CommandPool.h"
+#include "Graph.h"
 
 namespace oengine2d {
 	CommandBuffer::~CommandBuffer() {
 		if (_commandBuffer) {
-			vkFreeCommandBuffers(_device, _commandPool, 1, &_commandBuffer);
+			vkFreeCommandBuffers(_device, *_commandPool, 1, &_commandBuffer);
 			_commandBuffer = nullptr;
 		}
 	}
 
 	bool CommandBuffer::Create(VkCommandBufferLevel level) {
+		_commandPool = Graph::GetInstance().GetCommandPool();
+
 		VkCommandBufferAllocateInfo allocInfo = {};
 		allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
-		allocInfo.commandPool = _commandPool;
+		allocInfo.commandPool = *_commandPool;
 		allocInfo.level = level;
 		allocInfo.commandBufferCount = 1;
 

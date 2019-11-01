@@ -20,9 +20,20 @@ namespace oengine2d {
 
 		vkGetPhysicalDeviceProperties(_physicalDevice, &_deviceProperties);
 		vkGetPhysicalDeviceFeatures(_physicalDevice, &_deviceFeatures);
+		vkGetPhysicalDeviceMemoryProperties(_physicalDevice, &_memProperties);
 
 		std::cout << "pick physical device: " << _deviceProperties.deviceName << std::endl;
 		return true;
+	}
+
+	int32_t PhysicalDevice::FindMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties) {
+		for (int32_t i = 0; i < _memProperties.memoryTypeCount; i++) {
+			if ((typeFilter & (1 << i)) && (_memProperties.memoryTypes[i].propertyFlags & properties) == properties) {
+				return i;
+			}
+		}
+
+		return -1;
 	}
 
 	int32_t PhysicalDevice::ScorePhysicalDevice(const VkPhysicalDevice& device) {

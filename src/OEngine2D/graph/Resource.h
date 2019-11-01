@@ -3,18 +3,17 @@
 
 namespace oengine2d {
 	enum class ResourceType {
-		RT_PIPELINE,
+		RT_TEXTURE2D,
 	};
 
 	class Resource {
 	public:
-		Resource(ResourceType type) : _type(type) {}
+		Resource(ResourceType type, const std::string& path) : _type(type), _path(path) {}
 		~Resource() {}
 
 		inline ResourceType GetType() const { return _type; }
 
 		inline const std::string& GetPath() const { return _path; }
-		inline void SetPath(const std::string& path) { _path = path; }
 
 		inline void AddRef() { ++_ref; }
 		inline void DecRef() { --_ref; }

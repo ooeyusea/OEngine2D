@@ -7,7 +7,7 @@ namespace oengine2d {
 	class CommandPool;
 	class CommandBuffer {
 	public:
-		CommandBuffer(const LogicalDevice& device, const CommandPool& commandPool) : _device(device), _commandPool(commandPool) {}
+		CommandBuffer(const LogicalDevice& device) : _device(device) {}
 		~CommandBuffer();
 
 		bool Create(VkCommandBufferLevel level = VK_COMMAND_BUFFER_LEVEL_PRIMARY);
@@ -22,7 +22,7 @@ namespace oengine2d {
 
 	private:
 		const LogicalDevice& _device;
-		const CommandPool& _commandPool;
+		CommandPool * _commandPool = nullptr;
 
 		VkCommandBuffer _commandBuffer = nullptr;
 		bool _running = false;
