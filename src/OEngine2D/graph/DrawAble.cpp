@@ -1,5 +1,5 @@
 #include "DrawAble.h"
-#include "Pipeline.h"
+//#include "Pipeline.h"
 /*
 namespace oengine2d {
 	bool TestDraw::RecordCommand(Pipeline& pipeline) {

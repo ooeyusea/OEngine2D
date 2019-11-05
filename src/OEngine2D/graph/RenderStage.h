@@ -16,9 +16,14 @@ namespace oengine2d {
 		inline void SetPrev(RenderStage* prev) { _prev = prev; }
 		inline void SetNext(RenderStage* next) { _next = next; }
 
+		operator const VkRenderPass& () const { return _renderPass; }
+
 	protected:
 		virtual bool InnerCreate() = 0;
 		virtual void RecordCommand(CommandBuffer& cmd) = 0;
+
+	protected:
+		VkRenderPass _renderPass = nullptr;
 
 	private:
 		std::vector<CommandBuffer*> _commandBuffers;

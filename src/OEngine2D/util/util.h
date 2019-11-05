@@ -31,17 +31,17 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-	inline void __OMemcpy(void * dst, const s32 maxSize, const void * src, const s32 size) {
+	inline void __OMemcpy(void * dst, const int32_t maxSize, const void * src, const int32_t size) {
 		OASSERT(size <= maxSize, "memcpy out of range");
 
-		const s32 len = (size > maxSize ? maxSize : size);
+		const int32_t len = (size > maxSize ? maxSize : size);
 		memcpy(dst, src, len);
 	}
 
-	inline void __OMemset(void * dst, const s32 maxSize, const s32 val, const s32 size) {
+	inline void __OMemset(void * dst, const int32_t maxSize, const int32_t val, const int32_t size) {
 		OASSERT(size <= maxSize, "memset out of range");
 
-		const s32 len = (size > maxSize ? maxSize : size);
+		const int32_t len = (size > maxSize ? maxSize : size);
 		memset(dst, val, len);
 	}
 #ifdef __cplusplus

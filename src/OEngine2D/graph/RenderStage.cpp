@@ -28,7 +28,7 @@ namespace oengine2d {
 			CHECK(vkCreateSemaphore(Graph::GetInstance().GetLogicalDevice(), &semaphoreInfo, nullptr, &semaphore) == VK_SUCCESS, "failed to create synchronization objects for a frame in stage!");
 			_semaphores.emplace_back(semaphore);
 
-			CommandBuffer* commandBuffer = new CommandBuffer(Graph::GetInstance().GetLogicalDevice(), *Graph::GetInstance().GetCommandPool());
+			CommandBuffer* commandBuffer = new CommandBuffer(Graph::GetInstance().GetLogicalDevice());
 			CHECK(commandBuffer->Create(), "failed to create command buffer!");
 			_commandBuffers.emplace_back(commandBuffer);
 		}

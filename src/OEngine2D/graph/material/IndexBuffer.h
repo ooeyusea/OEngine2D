@@ -16,7 +16,7 @@ namespace oengine2d {
 			IBMT_TRANSMIT,
 		};
 
-		IndexBuffer(IndexFormatType format, IndexBufferMemoryType type, s32 count) : _format(format), _type(type), _count(count) {
+		IndexBuffer(IndexFormatType format, IndexBufferMemoryType type, uint32_t count) : _format(format), _type(type), _count(count) {
 			_size = ((format == IndexFormatType::IFT_U16) ? sizeof(uint16_t) : sizeof(uint32_t)) * _count;
 		}
 		~IndexBuffer();

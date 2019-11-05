@@ -9,14 +9,14 @@ namespace oengine2d {
 	class Resource {
 	public:
 		Resource(ResourceType type, const std::string& path) : _type(type), _path(path) {}
-		~Resource() {}
+		virtual ~Resource() {}
 
 		inline ResourceType GetType() const { return _type; }
 
 		inline const std::string& GetPath() const { return _path; }
 
-		inline void AddRef() { ++_ref; }
-		inline void DecRef() { --_ref; }
+		inline void AddRef() const { ++_ref; }
+		inline void DecRef() const { --_ref; }
 		inline bool IsNoUse() const { return _ref == 0; }
 
 		virtual bool Load() = 0;
@@ -25,6 +25,6 @@ namespace oengine2d {
 		ResourceType _type;
 		std::string _path;
 
-		int32_t _ref = 0;
+		mutable int32_t _ref = 0;
 	};
 }

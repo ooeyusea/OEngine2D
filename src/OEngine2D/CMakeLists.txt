@@ -44,8 +44,6 @@ ENDIF(UNIX)
 
 SET(GRAPH
 	"${CMAKE_CURRENT_SOURCE_DIR}/graph/Resource.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/graph/Pipeline.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/graph/Pipeline.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/graph/Graph.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/graph/Graph.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/graph/DrawAble.h"
@@ -72,6 +70,10 @@ SET(GRAPH
     "${CMAKE_CURRENT_SOURCE_DIR}/graph/RenderPass.cpp"
 	"${CMAKE_CURRENT_SOURCE_DIR}/graph/FrameBuffer.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/graph/FrameBuffer.cpp"
+	"${CMAKE_CURRENT_SOURCE_DIR}/graph/Image.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/graph/Image.cpp"
+	"${CMAKE_CURRENT_SOURCE_DIR}/graph/ImageView.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/graph/ImageView.cpp"
 )
 
 SET(GRAPH_MATERIAL
@@ -79,10 +81,14 @@ SET(GRAPH_MATERIAL
     "${CMAKE_CURRENT_SOURCE_DIR}/graph/material/VertexBuffer.cpp"
 	"${CMAKE_CURRENT_SOURCE_DIR}/graph/material/IndexBuffer.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/graph/material/IndexBuffer.cpp"
-	"${CMAKE_CURRENT_SOURCE_DIR}/graph/material/Image.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/graph/material/Image.cpp"
+	"${CMAKE_CURRENT_SOURCE_DIR}/graph/material/Bitmap.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/graph/material/Bitmap.cpp"
 	"${CMAKE_CURRENT_SOURCE_DIR}/graph/material/Texture2D.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/graph/material/Texture2D.cpp"
+	"${CMAKE_CURRENT_SOURCE_DIR}/graph/material/Sampler.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/graph/material/Sampler.cpp"
+	"${CMAKE_CURRENT_SOURCE_DIR}/graph/material/Pipeline.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/graph/material/Pipeline.cpp"
 )
 
 SET(GRAPH_STAGE
@@ -123,12 +129,9 @@ ADD_EXECUTABLE(OEngine2D
 
 IF(WIN32)
 TARGET_LINK_LIBRARIES(OEngine2D 
-	debug "${PROJECT_SOURCE_DIR}/thirdparty/libs/debug/glfw3dll.lib"
-	optimized "${PROJECT_SOURCE_DIR}/thirdparty/libs/release/glfw3dll.lib"
-	debug "${PROJECT_SOURCE_DIR}/thirdparty/libs/debug/shaderc_combined.lib"
-	optimized "${PROJECT_SOURCE_DIR}/thirdparty/libs/release/shaderc_combined.lib"
-	debug "${PROJECT_SOURCE_DIR}/thirdparty/libs/debug/FreeImaged.lib"
-	optimized "${PROJECT_SOURCE_DIR}/thirdparty/libs/release/FreeImage.lib"
+	FreeImage
+	glfw
+	${SPIRV_LIBRARIES}
 	${Vulkan_LIBRARY}
 )
 ENDIF(WIN32)

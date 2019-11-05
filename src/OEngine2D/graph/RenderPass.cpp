@@ -63,7 +63,7 @@ namespace oengine2d {
 
 			VkSubpassDescription subpass;
 			subpass.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
-			subpass.colorAttachmentCount = subpassColourAttachments.size();
+			subpass.colorAttachmentCount = static_cast<uint32_t>(subpassColourAttachments.size());
 			subpass.pColorAttachments = subpassColourAttachments.data();
 			if (subpassDepthAttachment)
 				subpass.pDepthStencilAttachment = &subpassDepthAttachment.value();
@@ -103,11 +103,11 @@ namespace oengine2d {
 
 		VkRenderPassCreateInfo renderPassInfo = {};
 		renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
-		renderPassInfo.attachmentCount = attachmentDescriptions.size();
+		renderPassInfo.attachmentCount = static_cast<uint32_t>(attachmentDescriptions.size());
 		renderPassInfo.pAttachments = attachmentDescriptions.data();
-		renderPassInfo.subpassCount = subpassDescriptions.size();
+		renderPassInfo.subpassCount = static_cast<uint32_t>(subpassDescriptions.size());
 		renderPassInfo.pSubpasses = subpassDescriptions.data();
-		renderPassInfo.dependencyCount = dependencies.size();
+		renderPassInfo.dependencyCount = static_cast<uint32_t>(dependencies.size());
 		renderPassInfo.pDependencies = dependencies.data();
 
 		CHECK(vkCreateRenderPass(Graph::GetInstance().GetLogicalDevice(), &renderPassInfo, nullptr, &_renderPass) == VK_SUCCESS, "create render pass failed");

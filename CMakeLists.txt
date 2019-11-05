@@ -61,4 +61,121 @@ ELSE(MSVC)
 	ENDIF()
 ENDIF(MSVC)
 
+include(FetchContent)
+
+find_package(glfw3 QUIET)
+if(NOT TARGET glfw)
+	FetchContent_Declare(glfw3
+		URL https://github.com/glfw/glfw/archive/3.3.tar.gz
+		URL_MD5 5be03812f5d109817e6558c3fab7bbe1
+	)
+	FetchContent_GetProperties(glfw3)
+	if(NOT glfw3_POPULATED)
+		foreach(_glfw3_option "GLFW_BUILD_TESTS" "GLFW_BUILD_EXAMPLES" "GLFW_BUILD_DOCS")
+			set(${_glfw3_option} OFF CACHE INTERNAL "")
+		endforeach()
+		FetchContent_Populate(glfw3)
+		add_subdirectory(${glfw3_SOURCE_DIR} ${glfw3_BINARY_DIR})
+	endif()
+
+	# Used later to define as a pre-build dependency
+	# The glfw3Config.cmake file doesn't define it automatically
+	set(glfw_FOUND false)
+else()
+	set(glfw_FOUND true)
+endif()
+
+# SPIRV and other GLSLang libraries are needed.
+# NOTE: End-users can pass -DSPIRV_ROOT=/some/path to find the lib
+set(SPIRV_ROOT CACHE PATH "An optional path to the system's SPIRV root dir to help find it. Ignore if building Glslang locally.")
+find_library(SPIRV_LIBRARY
+	NAMES "SPIRV" "libSPIRV"
+	HINTS "${SPIRV_ROOT}"
+)
+find_library(GLSLANG_LIBRARY
+	NAMES "glslang" "libglslang"
+	HINTS "${SPIRV_ROOT}"
+)
+find_library(OSDEPENDENT_LIBRARY
+	NAMES "OSDependent" "libOSDependent"
+	HINTS "${SPIRV_ROOT}"
+)
+find_library(OGLCOMPILER_LIBRARY
+	NAMES "OGLCompiler" "libOGLCompiler"
+	HINTS "${SPIRV_ROOT}"
+)
+find_library(HLSL_LIBRARY
+	NAMES "HLSL" "libHLSL"
+	HINTS "${SPIRV_ROOT}"
+)
+find_path(SPIRV_INCLUDE_DIR
+	NAMES "GlslangToSpv.h"
+	PATH_SUFFIXES "SPIRV"
+	HINTS "${SPIRV_ROOT}"
+)
+
+if(NOT SPIRV_LIBRARY
+	OR NOT GLSLANG_LIBRARY
+	OR NOT OSDEPENDENT_LIBRARY
+	OR NOT OGLCOMPILER_LIBRARY
+	OR NOT HLSL_LIBRARY
+	OR NOT SPIRV_INCLUDE_DIR)
+	set(_ACID_ALL_SYSTEM_LIBS false)
+	FetchContent_Declare(glslang
+		URL https://github.com/KhronosGroup/glslang/archive/7.12.3352.tar.gz
+		URL_MD5 b31bc89ffa86dbb5ab638c9c2a412302
+	)
+	FetchContent_GetProperties(glslang)
+	if(NOT glslang_POPULATED)
+		foreach(_glslang_option "BUILD_TESTING" "ENABLE_GLSLANG_BINARIES" "ENABLE_SPVREMAPPER" "ENABLE_HLSL" "ENABLE_AMD_EXTENSIONS" "ENABLE_NV_EXTENSIONS")
+			set(${_glslang_option} OFF CACHE INTERNAL "")
+		endforeach()
+		foreach(_glslang_option "ENABLE_OPT")
+			set(${_glslang_option} ON CACHE INTERNAL "")
+		endforeach()
+		FetchContent_Populate(glslang)
+		add_subdirectory(${glslang_SOURCE_DIR} ${glslang_BINARY_DIR})
+	endif()
+
+	# Used later to define as a pre-build dependencies
+	# Have to manually define because we manually searched for SPIRV
+	set(SPIRV_FOUND false)
+	# Used in target_link_libraries()
+	# Please note that SPIRV is now a CMake target, which means transitive dependencies are taken into account.
+	set(SPIRV_LIBRARIES "SPIRV")
+else()
+	set(SPIRV_FOUND true)
+	# glslang, hlsl and the others are transitive dependencies of libSPIRV, which are not detected
+	# during linking (because the project might be a shared object).
+	set(SPIRV_LIBRARIES
+		"${SPIRV_LIBRARY}"
+		"${GLSLANG_LIBRARY}"
+		"${OSDEPENDENT_LIBRARY}"
+		"${OGLCOMPILER_LIBRARY}"
+		"${HLSL_LIBRARY}"
+	)
+endif()
+
+find_package(FreeImage QUIET)
+if(NOT TARGET FreeImage)
+	FetchContent_Declare(FreeImage
+		URL https://github.com/glfw/glfw/archive/3.3.tar.gz
+		URL_MD5 5be03812f5d109817e6558c3fab7bbe1
+	)
+	FetchContent_GetProperties(FreeImage)
+	if(NOT FreeImage_POPULATED)
+		foreach(_FreeImage_option "GLFW_BUILD_TESTS" "GLFW_BUILD_EXAMPLES" "GLFW_BUILD_DOCS")
+			set(${_FreeImage_option} OFF CACHE INTERNAL "")
+		endforeach()
+		FetchContent_Populate(FreeImage)
+		add_subdirectory(${FreeImage_SOURCE_DIR} ${FreeImage_BINARY_DIR})
+	endif()
+
+	# Used later to define as a pre-build dependency
+	# The glfw3Config.cmake file doesn't define it automatically
+	set(FreeImage_FOUND false)
+else()
+	set(FreeImage_FOUND true)
+endif()
+
 ADD_SUBDIRECTORY(${PROJECT_SOURCE_DIR}/src/OEngine2D)
