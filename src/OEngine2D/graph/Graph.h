@@ -40,6 +40,13 @@ namespace oengine2d {
 		inline VkSemaphore GetRenderFinishSemaphore(size_t frame) const { return _renderFinishedSemaphores[frame]; }
 		inline VkFence GetFlightFence(size_t frame) const { return _inFlightFences[frame]; }
 
+		inline std::tuple<RenderStage*, uint32_t> GetStage(const std::string& name) const {
+			auto itr = _stageDict.find(name);
+			if (itr != _stageDict.end())
+				return itr->second;
+			return {};
+		}
+
 	private:
 		void DrawFrame(CommandBuffer& commandBuffer);
 
@@ -56,6 +63,7 @@ namespace oengine2d {
 		size_t _currentFrame = 0;
 		
 		std::vector<RenderStage*> _stages;
+		std::unordered_map<std::string, std::tuple<RenderStage*, uint32_t>> _stageDict;
 
 		std::mutex _mutex;
 	};

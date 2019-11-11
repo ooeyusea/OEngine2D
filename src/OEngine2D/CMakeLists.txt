@@ -5,6 +5,10 @@ INCLUDE_DIRECTORIES(
 	"${CMAKE_CURRENT_SOURCE_DIR}/"
 )
 
+IF (NOT glfw_FOUND)
+	INCLUDE_DIRECTORIES("${glfw3_SOURCE_DIR}/include")
+ENDIF()
+
 SET(KERNEL
     "${CMAKE_CURRENT_SOURCE_DIR}/Application.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/Application.cpp"
@@ -76,19 +80,53 @@ SET(GRAPH
     "${CMAKE_CURRENT_SOURCE_DIR}/graph/ImageView.cpp"
 )
 
+SET(GRAPH_VERTEX_DATA
+	"${CMAKE_CURRENT_SOURCE_DIR}/graph/vertexdata/VertexDescription.h"
+	"${CMAKE_CURRENT_SOURCE_DIR}/graph/vertexdata/VertexBuffer.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/graph/vertexdata/VertexBuffer.cpp"
+	"${CMAKE_CURRENT_SOURCE_DIR}/graph/vertexdata/IndexBuffer.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/graph/vertexdata/IndexBuffer.cpp"
+)
+
+SET(GRAPH_TEXTURE
+	"${CMAKE_CURRENT_SOURCE_DIR}/graph/texture/Bitmap.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/graph/texture/Bitmap.cpp"
+	"${CMAKE_CURRENT_SOURCE_DIR}/graph/texture/Texture2D.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/graph/texture/Texture2D.cpp"
+	"${CMAKE_CURRENT_SOURCE_DIR}/graph/texture/Sampler.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/graph/texture/Sampler.cpp"
+)
+
+SET(GRAPH_MATERIAL_UNIFORM
+	"${CMAKE_CURRENT_SOURCE_DIR}/graph/material/uniform/Float1Uniform.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/graph/material/uniform/Float1Uniform.cpp"
+	"${CMAKE_CURRENT_SOURCE_DIR}/graph/material/uniform/Float2Uniform.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/graph/material/uniform/Float2Uniform.cpp"
+	"${CMAKE_CURRENT_SOURCE_DIR}/graph/material/uniform/Float3Uniform.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/graph/material/uniform/Float3Uniform.cpp"
+	"${CMAKE_CURRENT_SOURCE_DIR}/graph/material/uniform/Float4Uniform.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/graph/material/uniform/Float4Uniform.cpp"
+	"${CMAKE_CURRENT_SOURCE_DIR}/graph/material/uniform/MatrixUniform.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/graph/material/uniform/MatrixUniform.cpp"
+	"${CMAKE_CURRENT_SOURCE_DIR}/graph/material/uniform/Sampler2DUniform.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/graph/material/uniform/Sampler2DUniform.cpp"
+)
+
 SET(GRAPH_MATERIAL
-	"${CMAKE_CURRENT_SOURCE_DIR}/graph/material/VertexBuffer.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/graph/material/VertexBuffer.cpp"
-	"${CMAKE_CURRENT_SOURCE_DIR}/graph/material/IndexBuffer.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/graph/material/IndexBuffer.cpp"
-	"${CMAKE_CURRENT_SOURCE_DIR}/graph/material/Bitmap.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/graph/material/Bitmap.cpp"
-	"${CMAKE_CURRENT_SOURCE_DIR}/graph/material/Texture2D.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/graph/material/Texture2D.cpp"
-	"${CMAKE_CURRENT_SOURCE_DIR}/graph/material/Sampler.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/graph/material/Sampler.cpp"
 	"${CMAKE_CURRENT_SOURCE_DIR}/graph/material/Pipeline.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/graph/material/Pipeline.cpp"
+	"${CMAKE_CURRENT_SOURCE_DIR}/graph/material/Pass.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/graph/material/Pass.cpp"
+	"${CMAKE_CURRENT_SOURCE_DIR}/graph/material/Technique.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/graph/material/Technique.cpp"
+	"${CMAKE_CURRENT_SOURCE_DIR}/graph/material/Material.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/graph/material/Material.cpp"
+	"${CMAKE_CURRENT_SOURCE_DIR}/graph/material/Uniform.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/graph/material/Uniform.cpp"
+	"${CMAKE_CURRENT_SOURCE_DIR}/graph/material/RenderState.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/graph/material/RenderState.cpp"
+	"${CMAKE_CURRENT_SOURCE_DIR}/graph/material/RenderOption.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/graph/material/RenderOption.cpp"
 )
 
 SET(GRAPH_STAGE
@@ -112,6 +150,9 @@ SOURCE_GROUP(src\\util\\detail FILES ${DETAIL})
 SOURCE_GROUP(src\\util\\tinyxml FILES ${TINYXML})
 SOURCE_GROUP(src\\graph FILES ${GRAPH})
 SOURCE_GROUP(src\\graph\\material FILES ${GRAPH_MATERIAL})
+SOURCE_GROUP(src\\graph\\material\\uniform FILES ${GRAPH_MATERIAL_UNIFORM})
+SOURCE_GROUP(src\\graph\\vertex_data FILES ${GRAPH_VERTEX_DATA})
+SOURCE_GROUP(src\\graph\\texture FILES ${GRAPH_TEXTURE})
 SOURCE_GROUP(src\\graph\\stage FILES ${GRAPH_STAGE})
 SOURCE_GROUP(src\\system FILES ${SYS})
 SOURCE_GROUP(src FILES ${KERNEL})
@@ -122,14 +163,18 @@ ADD_EXECUTABLE(OEngine2D
 	${TINYXML}
 	${GRAPH}
 	${GRAPH_MATERIAL}
+	${GRAPH_VERTEX_DATA}
+	${GRAPH_TEXTURE}
 	${GRAPH_STAGE}
+	${GRAPH_MATERIAL_UNIFORM}
 	${SYS}
     ${KERNEL}
 )
 
 IF(WIN32)
 TARGET_LINK_LIBRARIES(OEngine2D 
-	FreeImage
+	debug "${PROJECT_SOURCE_DIR}/thirdparty/libs/debug/FreeImaged.lib"
+	optimized "${PROJECT_SOURCE_DIR}/thirdparty/libs/release/FreeImage.lib"
 	glfw
 	${SPIRV_LIBRARIES}
 	${Vulkan_LIBRARY}

@@ -156,26 +156,4 @@ else()
 	)
 endif()
 
-find_package(FreeImage QUIET)
-if(NOT TARGET FreeImage)
-	FetchContent_Declare(FreeImage
-		URL https://github.com/glfw/glfw/archive/3.3.tar.gz
-		URL_MD5 5be03812f5d109817e6558c3fab7bbe1
-	)
-	FetchContent_GetProperties(FreeImage)
-	if(NOT FreeImage_POPULATED)
-		foreach(_FreeImage_option "GLFW_BUILD_TESTS" "GLFW_BUILD_EXAMPLES" "GLFW_BUILD_DOCS")
-			set(${_FreeImage_option} OFF CACHE INTERNAL "")
-		endforeach()
-		FetchContent_Populate(FreeImage)
-		add_subdirectory(${FreeImage_SOURCE_DIR} ${FreeImage_BINARY_DIR})
-	endif()
-
-	# Used later to define as a pre-build dependency
-	# The glfw3Config.cmake file doesn't define it automatically
-	set(FreeImage_FOUND false)
-else()
-	set(FreeImage_FOUND true)
-endif()
-
 ADD_SUBDIRECTORY(${PROJECT_SOURCE_DIR}/src/OEngine2D)

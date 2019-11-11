@@ -18,6 +18,8 @@ namespace oengine2d {
 
 		operator const VkRenderPass& () const { return _renderPass; }
 
+		inline const std::unordered_map<std::string, std::tuple<RenderStage*, uint32_t>>& GetDict() const { return _dict; }
+
 	protected:
 		virtual bool InnerCreate() = 0;
 		virtual void RecordCommand(CommandBuffer& cmd) = 0;
@@ -25,9 +27,9 @@ namespace oengine2d {
 	protected:
 		VkRenderPass _renderPass = nullptr;
 
-	private:
 		std::vector<CommandBuffer*> _commandBuffers;
 		std::vector<VkSemaphore> _semaphores;
+		std::unordered_map<std::string, std::tuple<RenderStage*, uint32_t>> _dict;
 
 		RenderStage* _prev = nullptr;
 		RenderStage* _next = nullptr;

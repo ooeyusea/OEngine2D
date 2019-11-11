@@ -4,6 +4,7 @@
 namespace oengine2d {
 	enum class ResourceType {
 		RT_TEXTURE2D,
+		RT_MATERIAL,
 	};
 
 	class Resource {

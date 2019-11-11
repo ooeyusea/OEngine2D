@@ -109,6 +109,8 @@ namespace oengine2d {
 		}
 
 		_stages.emplace_back(stage);
+		for (auto& d : stage->GetDict())
+			_stageDict[d.first] = d.second;
 		return true;
 	}
 

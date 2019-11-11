@@ -6,22 +6,36 @@
 #include "../CommandPool.h"
 
 namespace oengine2d {
-	void VertexDescription::CalcVertexSize() {
+	void VertexDescription::Fix() {
+		std::sort(_attributeDescriptions.begin(), _attributeDescriptions.end(), [](const VkVertexInputAttributeDescription& a, const VkVertexInputAttributeDescription& b) {
+			return a.location < b.location;
+		});
+
+		_vertexSize = 0;
 		for (auto& desc : _attributeDescriptions) {
-			switch (desc.format) {
-			case VK_FORMAT_R32_UINT: _vertexSize += sizeof(uint32_t); break;
-			case VK_FORMAT_R32_SINT: _vertexSize += sizeof(int32_t); break;
-			case VK_FORMAT_R32_SFLOAT: _vertexSize += sizeof(float); break;
-			case VK_FORMAT_R32G32_UINT: _vertexSize += sizeof(uint32_t) * 2; break;
-			case VK_FORMAT_R32G32_SINT: _vertexSize += sizeof(int32_t) * 2; break;
-			case VK_FORMAT_R32G32_SFLOAT: _vertexSize += sizeof(float) * 2; break;
-			case VK_FORMAT_R32G32B32_UINT: _vertexSize += sizeof(uint32_t) * 3; break;
-			case VK_FORMAT_R32G32B32_SINT: _vertexSize += sizeof(int32_t) * 3; break;
-			case VK_FORMAT_R32G32B32_SFLOAT: _vertexSize += sizeof(float) * 4; break;
-			case VK_FORMAT_R32G32B32A32_UINT: _vertexSize += sizeof(uint32_t) * 4; break;
-			case VK_FORMAT_R32G32B32A32_SINT: _vertexSize += sizeof(int32_t) * 4; break;
-			case VK_FORMAT_R32G32B32A32_SFLOAT: _vertexSize += sizeof(float) * 4; break;
-			}
+			desc.offset = _vertexSize;
+			_vertexSize += GetFormatSize(desc.format);
+		}
+
+		_bindingDescription.binding = 0;
+		_bindingDescription.stride = _vertexSize;
+		_bindingDescription.inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
+	}
+
+	int32_t VertexDescription::GetFormatSize(VkFormat format) {
+		switch (format) {
+		case VK_FORMAT_R32_UINT: return sizeof(uint32_t); break;
+		case VK_FORMAT_R32_SINT: return sizeof(int32_t); break;
+		case VK_FORMAT_R32_SFLOAT: return sizeof(float); break;
+		case VK_FORMAT_R32G32_UINT:return sizeof(uint32_t) * 2; break;
+		case VK_FORMAT_R32G32_SINT: return sizeof(int32_t) * 2; break;
+		case VK_FORMAT_R32G32_SFLOAT: return sizeof(float) * 2; break;
+		case VK_FORMAT_R32G32B32_UINT: return sizeof(uint32_t) * 3; break;
+		case VK_FORMAT_R32G32B32_SINT: return sizeof(int32_t) * 3; break;
+		case VK_FORMAT_R32G32B32_SFLOAT: return sizeof(float) * 4; break;
+		case VK_FORMAT_R32G32B32A32_UINT: return sizeof(uint32_t) * 4; break;
+		case VK_FORMAT_R32G32B32A32_SINT: return sizeof(int32_t) * 4; break;
+		case VK_FORMAT_R32G32B32A32_SFLOAT: return sizeof(float) * 4; break;
 		}
 	}
 

@@ -6,22 +6,22 @@ namespace oengine2d {
 	class VertexDescription {
 	public:
 		VertexDescription() {}
-		VertexDescription(std::vector<VkVertexInputAttributeDescription>&& descriptions) : _attributeDescriptions(descriptions) {
-			CalcVertexSize();
-		}
 
 		inline uint32_t GetVertexSize() const { return _vertexSize; }
-		std::vector<VkVertexInputAttributeDescription>& GetAttributes() { return _attributeDescriptions; }
+		inline std::vector<VkVertexInputAttributeDescription>& GetAttributeDescription() { return _attributeDescriptions; }
+		inline const VkVertexInputBindingDescription& GetBindingDescription() { return _bindingDescription; }
 
 		inline void AddAttribute(const VkVertexInputAttributeDescription& desc) {
 			_attributeDescriptions.emplace_back(desc);
-			CalcVertexSize();
 		}
 
+		void Fix();
+
 	protected:
-		void CalcVertexSize();
+		int32_t GetFormatSize(VkFormat format);
 
 	private:
+		VkVertexInputBindingDescription _bindingDescription = {};
 		std::vector<VkVertexInputAttributeDescription> _attributeDescriptions;
 		uint32_t _vertexSize = 0;
 	};
