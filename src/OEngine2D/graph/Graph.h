@@ -57,6 +57,8 @@ namespace oengine2d {
 		LogicalDevice* _logicalDevice = nullptr;
 		SwapChain* _swapChain = nullptr;
 
+		bool _recreate = true;
+
 		std::vector<VkSemaphore> _imageAvailableSemaphores;
 		std::vector<VkSemaphore> _renderFinishedSemaphores;
 		std::vector<VkFence> _inFlightFences;

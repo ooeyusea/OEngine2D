@@ -157,16 +157,13 @@ namespace oengine2d {
 		return resources;
 	}
 
-	bool Pipeline::Load(TiXmlElement* root) {
-		std::vector<VkPipelineShaderStageCreateInfo> shaderStages;
-		CHECK(LoadShaders(root, shaderStages), "load shader failed");
-
+	bool Pipeline::Create() {
 		VkPipelineVertexInputStateCreateInfo vertexInputInfo = {};
 		vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
 		vertexInputInfo.vertexBindingDescriptionCount = 1;
-		vertexInputInfo.pVertexBindingDescriptions = &_vertexDescription.GetBindingDescription();
-		vertexInputInfo.vertexAttributeDescriptionCount = _vertexDescription.GetAttributeDescription().size();
-		vertexInputInfo.pVertexAttributeDescriptions = _vertexDescription.GetAttributeDescription().data();
+		vertexInputInfo.pVertexBindingDescriptions = &_desc->GetBindingDescription();
+		vertexInputInfo.vertexAttributeDescriptionCount = _desc->GetAttributeDescription().size();
+		vertexInputInfo.pVertexAttributeDescriptions = _desc->GetAttributeDescription().data();
 
 		VkPipelineInputAssemblyStateCreateInfo inputAssembly = {};
 		inputAssembly.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
@@ -296,8 +293,8 @@ namespace oengine2d {
 
 		VkGraphicsPipelineCreateInfo pipelineInfo = {};
 		pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
-		pipelineInfo.stageCount = (uint32_t)shaderStages.size();
-		pipelineInfo.pStages = shaderStages.data();
+		pipelineInfo.stageCount = (uint32_t)_shaderStages.size();
+		pipelineInfo.pStages = _shaderStages.data();
 		pipelineInfo.pVertexInputState = &vertexInputInfo;
 		pipelineInfo.pInputAssemblyState = &inputAssembly;
 		pipelineInfo.pViewportState = &viewportState;
@@ -325,6 +322,10 @@ namespace oengine2d {
 
 		if (_descriptorSetLayout)
 			vkDestroyDescriptorSetLayout(Graph::GetInstance().GetLogicalDevice(), _descriptorSetLayout, nullptr);
+	}
+
+	void Pipeline::AddShader(std::string source, VkShaderStageFlags flag, const std::string& defines) {
+		LoadShaders(source, flag, defines);
 	}
 
 	VkShaderModule Pipeline::CreateShader(VkDevice device, const std::string& sourceName, VkShaderStageFlags flag, const char* entry, const std::string& source, const std::string& defines) {
@@ -411,33 +412,23 @@ namespace oengine2d {
 			return VK_PRIMITIVE_TOPOLOGY_TRIANGLE_FAN;
 	}
 
-	bool Pipeline::LoadShaders(TiXmlElement* root, std::vector<VkPipelineShaderStageCreateInfo>& shaderStages) {
-		for (auto* elem = root->FirstChildElement("shader"); elem; elem = elem->NextSiblingElement("shader")) {
-			if (strcmp(elem->Attribute("type"), "vert") == 0) {
-				VkShaderModule shaderModule = CreateShader(Graph::GetInstance().GetLogicalDevice(), elem->Attribute("name"), VK_SHADER_STAGE_VERTEX_BIT, "main", elem->FirstChild()->Value(), {});
-				if (!shaderModule) {
-					return false;
-				}
-
-				shaderStages.push_back({});
-				shaderStages.back().sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
-				shaderStages.back().stage = VK_SHADER_STAGE_VERTEX_BIT;
-				shaderStages.back().module = shaderModule;
-				shaderStages.back().pName = "main";
-			}
-			else if (strcmp(elem->Attribute("type"), "frag") == 0) {
-				VkShaderModule shaderModule = CreateShader(Graph::GetInstance().GetLogicalDevice(), elem->Attribute("name"), VK_SHADER_STAGE_FRAGMENT_BIT, "main", elem->FirstChild()->Value(), {});
-				if (!shaderModule) {
-					return false;
-				}
-
-				shaderStages.push_back({});
-				shaderStages.back().sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
-				shaderStages.back().stage = VK_SHADER_STAGE_FRAGMENT_BIT;
-				shaderStages.back().module = shaderModule;
-				shaderStages.back().pName = "main";
-			}
+	bool Pipeline::LoadShaders(const std::string& source, VkShaderStageFlags flag, const std::string& defines) {
+		const char* entry = "";
+		switch (flag) {
+		case VK_SHADER_STAGE_VERTEX_BIT: entry = "vert"; break;
+		case VK_SHADER_STAGE_FRAGMENT_BIT: entry = "frag"; break;
 		}
+
+		VkShaderModule shaderModule = CreateShader(Graph::GetInstance().GetLogicalDevice(), "SHADER", flag, entry, source.c_str(), defines);
+		if (!shaderModule) {
+			return false;
+		}
+
+		_shaderStages.push_back({});
+		_shaderStages.back().sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+		_shaderStages.back().stage = (VkShaderStageFlagBits)flag;
+		_shaderStages.back().module = shaderModule;
+		_shaderStages.back().pName = entry;
 
 		return true;
 	}
@@ -503,25 +494,6 @@ namespace oengine2d {
 	}
 
 	void Pipeline::LoadAttribute(glslang::TProgram& program) {
-		for (int32_t i = 0; i < program.getNumLiveAttributes(); i++) {
-			auto reflection = program.getPipeInput(i);
-
-			if (reflection.name.empty())
-				continue;
-
-			auto& qualifier = reflection.getType()->getQualifier();
-			auto& descs = _vertexDescription.GetAttributeDescription();
-			auto itr = std::find_if(descs.begin(), descs.end(), [&qualifier](const auto& desc) {
-				return desc.location == qualifier.layoutLocation;
-			});
-
-			if (itr != descs.end())
-				continue;
-
-			_vertexDescription.AddAttribute({ qualifier.layoutLocation, 0, GlTypeToVk(reflection.glDefineType), 0 });
-		}
-
-		_vertexDescription.Fix();
 	}
 
 	VkFormat Pipeline::GlTypeToVk(int32_t type) {

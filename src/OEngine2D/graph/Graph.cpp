@@ -47,6 +47,12 @@ namespace oengine2d {
 	}
 
 	void Graph::Update() {
+		if (_recreate) {
+			for (auto itr = _stages.begin(); itr != _stages.end(); ++itr) {
+				(*itr)->ReCreate();
+			}
+		}
+
 		_swapChain->AcquireNextImage(_imageAvailableSemaphores[_currentFrame], _inFlightFences[_currentFrame]);
 		for (auto itr = _stages.begin(); itr != _stages.end(); ++itr)
 			(*itr)->Update();
@@ -110,7 +116,7 @@ namespace oengine2d {
 
 		_stages.emplace_back(stage);
 		for (auto& d : stage->GetDict())
-			_stageDict[d.first] = d.second;
+			_stageDict[d.first] = { stage, d.second };
 		return true;
 	}
 

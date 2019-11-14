@@ -24,6 +24,9 @@ namespace oengine2d {
 		bool WriteBuffer(uint32_t offset, uint32_t size, const void* p);
 		bool CopyBuffer();
 
+		inline operator const VkBuffer& () const { return _vertexBuffer; }
+		inline uint32_t GetCount() const { return _count; }
+
 	private:
 		bool CreateBuffer(VkBufferUsageFlags usage, VkMemoryPropertyFlags flags, VkBuffer& buffer, VkDeviceMemory& memory);
 

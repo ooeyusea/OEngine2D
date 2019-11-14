@@ -1,9 +1,10 @@
 #pragma once
 #include "util.h"
-#include "VertexDescription.h"
+#include "../vertexdata/VertexDescription.h"
 #include "tinyxml/tinyxml.h"
 #include "SPIRV/GlslangToSpv.h"
 #include "glslang/Public/ShaderLang.h"
+#include "RenderState.h"
 
 namespace oengine2d {
 	class RenderStage;
@@ -96,19 +97,22 @@ namespace oengine2d {
 
 	class Pipeline {
 	public:
-		Pipeline(const RenderStage& stage, uint32_t subpass) : _stage(stage), _subpass(subpass){}
+		Pipeline(const RenderStage& stage, uint32_t subpass, const RenderState& state) : _stage(stage), _subpass(subpass), _state(state) {}
 		~Pipeline() { Release(); }
 
-		bool Load(TiXmlElement * root);
+		bool Create();
 		void Release();
 
-		inline VkPipeline GetPipeline() const { return _graphicsPipeline; }
+		void AddShader(std::string source, VkShaderStageFlags flag, const std::string& defines = "");
+		void SetVertex(VertexDescription* desc) { _desc = desc; }
+
+		operator const VkPipeline& () const { return _graphicsPipeline; }
 
 	private:
 		VkShaderModule CreateShader(VkDevice device, const std::string& sourceName, VkShaderStageFlags flag, const char * entry, const std::string& source, const std::string& defines);
 		VkPrimitiveTopology ToTopology(const std::string& type);
 
-		bool LoadShaders(TiXmlElement* root, std::vector<VkPipelineShaderStageCreateInfo>& shaderStages);
+		bool LoadShaders(const std::string& source, VkShaderStageFlags flag, const std::string& defines);
 
 		void LoadUniformBlock(glslang::TProgram& program, VkShaderStageFlags flag);
 		void LoadUniform(glslang::TProgram& program, VkShaderStageFlags flag);
@@ -119,26 +123,16 @@ namespace oengine2d {
 
 	private:
 		const RenderStage& _stage;
+		const RenderState& _state;
 		uint32_t _subpass;
 
+		std::vector<VkPipelineShaderStageCreateInfo> _shaderStages;
+		VertexDescription* _desc = nullptr;
 		VkDescriptorSetLayout _descriptorSetLayout = nullptr;
 		VkPipelineLayout _pipelineLayout = nullptr;
 		VkPipeline _graphicsPipeline = nullptr;
 
-		VertexDescription _vertexDescription;
 		std::map<std::string, Uniform> _uniforms;
 		std::map<std::string, UniformBlock> _uniformBlocks;
-		VkPrimitiveTopology _topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
-
-		bool _depthClamp = false;
-		bool _rasterizerDiscard = false;
-		VkPolygonMode _polygonMode = VK_POLYGON_MODE_FILL;
-		float _lineWidth = 1.0f;
-		VkCullModeFlags _cullMode = VK_CULL_MODE_FRONT_BIT;
-		VkFrontFace _frontFace = VK_FRONT_FACE_CLOCKWISE;
-		bool _depthBias = false;
-		float _depthBiasConstantFactor = 0.0f;
-		float _depthBiasClamp = 0.0f;
-		float _depthBiasSlopeFactor = 0.0f;
 	};
 }

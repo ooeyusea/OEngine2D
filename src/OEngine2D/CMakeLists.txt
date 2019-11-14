@@ -145,6 +145,14 @@ SET(SYS
     "${CMAKE_CURRENT_SOURCE_DIR}/system/FileSystem.cpp"
 )
 
+SET(RESOURCES
+	
+)
+
+SET(RESOURCES_SHADER
+    "${CMAKE_CURRENT_SOURCE_DIR}/resources/shader/oengine_in.glsl"
+)
+
 SOURCE_GROUP(src\\util FILES ${UTIL})
 SOURCE_GROUP(src\\util\\detail FILES ${DETAIL})
 SOURCE_GROUP(src\\util\\tinyxml FILES ${TINYXML})
@@ -156,6 +164,8 @@ SOURCE_GROUP(src\\graph\\texture FILES ${GRAPH_TEXTURE})
 SOURCE_GROUP(src\\graph\\stage FILES ${GRAPH_STAGE})
 SOURCE_GROUP(src\\system FILES ${SYS})
 SOURCE_GROUP(src FILES ${KERNEL})
+SOURCE_GROUP(resources\\shader FILES ${RESOURCES_SHADER})
+SOURCE_GROUP(resources FILES ${RESOURCES})
 
 ADD_EXECUTABLE(OEngine2D
     ${UTIL}
@@ -169,6 +179,8 @@ ADD_EXECUTABLE(OEngine2D
 	${GRAPH_MATERIAL_UNIFORM}
 	${SYS}
     ${KERNEL}
+	${RESOURCES_SHADER}
+	${RESOURCES}
 )
 
 IF(WIN32)

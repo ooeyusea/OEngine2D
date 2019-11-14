@@ -28,6 +28,11 @@ namespace oengine2d {
 		bool WriteBuffer(uint32_t offset, uint32_t size, const void* p);
 		bool CopyBuffer();
 
+		inline operator const VkBuffer& () const { return _indexBuffer; }
+
+		inline VkIndexType GetIndexType() const { return ((_format == IndexFormatType::IFT_U16) ? VK_INDEX_TYPE_UINT16 : VK_INDEX_TYPE_UINT32); }
+		inline uint32_t GetCount() const { return _count; }
+
 	private:
 		bool CreateBuffer(VkBufferUsageFlags usage, VkMemoryPropertyFlags flags, VkBuffer& buffer, VkDeviceMemory& memory);
 

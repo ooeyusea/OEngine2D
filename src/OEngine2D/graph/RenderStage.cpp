@@ -36,6 +36,10 @@ namespace oengine2d {
 		return InnerCreate();
 	}
 
+	bool RenderStage::ReCreate() {
+		return true;
+	}
+
 	void RenderStage::Update() {
 		size_t frame = Graph::GetInstance().GetCurrentFrame();
 

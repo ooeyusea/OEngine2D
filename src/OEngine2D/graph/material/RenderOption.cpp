@@ -17,6 +17,7 @@ namespace oengine2d {
 
 	void RenderOption::Merge(const RenderOption& rhs) {
 		_state.Merge(rhs._state);
+		_desc = rhs._desc;
 		for (auto itr2 = rhs._uniforms.begin(); itr2 != rhs._uniforms.end(); ++itr2) {
 			auto itr = _uniforms.find(itr2->first);
 			if (itr != _uniforms.end())

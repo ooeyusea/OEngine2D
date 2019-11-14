@@ -24,6 +24,8 @@ namespace oengine2d {
 
 		bool Create();
 
+		operator const VkRenderPass& () const { return _renderPass; }
+
 	private:
 		VkRenderPass _renderPass = nullptr;
 
