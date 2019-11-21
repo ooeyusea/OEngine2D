@@ -5,6 +5,7 @@ namespace oengine2d {
 	enum class ResourceType {
 		RT_TEXTURE2D,
 		RT_MATERIAL,
+		RT_SHADER,
 	};
 
 	class Resource {
@@ -20,7 +21,7 @@ namespace oengine2d {
 		inline void DecRef() const { --_ref; }
 		inline bool IsNoUse() const { return _ref == 0; }
 
-		virtual bool Load() = 0;
+		virtual bool Load(const char * data, const uint32_t size) = 0;
 
 	protected:
 		ResourceType _type;

@@ -3,11 +3,10 @@
 #include "util.h"
 
 namespace oengine2d {
-	class LogicalDevice;
 	class CommandPool;
 	class CommandBuffer {
 	public:
-		CommandBuffer(const LogicalDevice& device) : _device(device) {}
+		CommandBuffer() {}
 		~CommandBuffer();
 
 		bool Create(VkCommandBufferLevel level = VK_COMMAND_BUFFER_LEVEL_PRIMARY);
@@ -21,7 +20,6 @@ namespace oengine2d {
 		bool Submit(VkSemaphore waitSemaphore, VkSemaphore singalSemaphore, VkFence inFlightFence);
 
 	private:
-		const LogicalDevice& _device;
 		CommandPool * _commandPool = nullptr;
 
 		VkCommandBuffer _commandBuffer = nullptr;

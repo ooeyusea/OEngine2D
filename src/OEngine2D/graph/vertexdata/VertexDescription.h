@@ -11,6 +11,9 @@ namespace oengine2d {
 		inline std::vector<VkVertexInputAttributeDescription>& GetAttributeDescription() { return _attributeDescriptions; }
 		inline const VkVertexInputBindingDescription& GetBindingDescription() { return _bindingDescription; }
 
+		inline VkPrimitiveTopology GetTopology() const { return _topology; }
+		inline void SetTopology(VkPrimitiveTopology topology) { _topology = topology; }
+
 		inline void AddAttribute(const VkVertexInputAttributeDescription& desc) {
 			_attributeDescriptions.emplace_back(desc);
 		}
@@ -21,6 +24,8 @@ namespace oengine2d {
 		int32_t GetFormatSize(VkFormat format);
 
 	private:
+		VkPrimitiveTopology _topology = VK_PRIMITIVE_TOPOLOGY_POINT_LIST;
+
 		VkVertexInputBindingDescription _bindingDescription = {};
 		std::vector<VkVertexInputAttributeDescription> _attributeDescriptions;
 		uint32_t _vertexSize = 0;

@@ -97,36 +97,32 @@ SET(GRAPH_TEXTURE
     "${CMAKE_CURRENT_SOURCE_DIR}/graph/texture/Sampler.cpp"
 )
 
-SET(GRAPH_MATERIAL_UNIFORM
-	"${CMAKE_CURRENT_SOURCE_DIR}/graph/material/uniform/Float1Uniform.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/graph/material/uniform/Float1Uniform.cpp"
-	"${CMAKE_CURRENT_SOURCE_DIR}/graph/material/uniform/Float2Uniform.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/graph/material/uniform/Float2Uniform.cpp"
-	"${CMAKE_CURRENT_SOURCE_DIR}/graph/material/uniform/Float3Uniform.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/graph/material/uniform/Float3Uniform.cpp"
-	"${CMAKE_CURRENT_SOURCE_DIR}/graph/material/uniform/Float4Uniform.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/graph/material/uniform/Float4Uniform.cpp"
-	"${CMAKE_CURRENT_SOURCE_DIR}/graph/material/uniform/MatrixUniform.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/graph/material/uniform/MatrixUniform.cpp"
-	"${CMAKE_CURRENT_SOURCE_DIR}/graph/material/uniform/Sampler2DUniform.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/graph/material/uniform/Sampler2DUniform.cpp"
-)
-
 SET(GRAPH_MATERIAL
-	"${CMAKE_CURRENT_SOURCE_DIR}/graph/material/Pipeline.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/graph/material/Pipeline.cpp"
-	"${CMAKE_CURRENT_SOURCE_DIR}/graph/material/Pass.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/graph/material/Pass.cpp"
-	"${CMAKE_CURRENT_SOURCE_DIR}/graph/material/Technique.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/graph/material/Technique.cpp"
 	"${CMAKE_CURRENT_SOURCE_DIR}/graph/material/Material.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/graph/material/Material.cpp"
-	"${CMAKE_CURRENT_SOURCE_DIR}/graph/material/Uniform.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/graph/material/Uniform.cpp"
-	"${CMAKE_CURRENT_SOURCE_DIR}/graph/material/RenderState.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/graph/material/RenderState.cpp"
-	"${CMAKE_CURRENT_SOURCE_DIR}/graph/material/RenderOption.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/graph/material/RenderOption.cpp"
+)
+
+SET(GRAPH_SHADER
+	"${CMAKE_CURRENT_SOURCE_DIR}/graph/shader/Pipeline.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/graph/shader/Pipeline.cpp"
+	"${CMAKE_CURRENT_SOURCE_DIR}/graph/shader/DescriptorSet.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/graph/shader/DescriptorSet.cpp"
+	"${CMAKE_CURRENT_SOURCE_DIR}/graph/shader/Pass.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/graph/shader/Pass.cpp"
+	"${CMAKE_CURRENT_SOURCE_DIR}/graph/shader/SubShader.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/graph/shader/SubShader.cpp"
+	"${CMAKE_CURRENT_SOURCE_DIR}/graph/shader/Shader.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/graph/shader/Shader.cpp"
+	"${CMAKE_CURRENT_SOURCE_DIR}/graph/shader/ShaderProperty.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/graph/shader/ShaderProperty.cpp"
+	"${CMAKE_CURRENT_SOURCE_DIR}/graph/shader/UniformBuffer.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/graph/shader/UniformBuffer.cpp"
+	"${CMAKE_CURRENT_SOURCE_DIR}/graph/shader/PropertyHandler.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/graph/shader/PropertyHandler.cpp"
+	"${CMAKE_CURRENT_SOURCE_DIR}/graph/shader/RenderState.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/graph/shader/RenderState.cpp"
+	"${CMAKE_CURRENT_SOURCE_DIR}/graph/shader/Renderable.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/graph/shader/Renderable.cpp"
 )
 
 SET(GRAPH_STAGE
@@ -157,8 +153,8 @@ SOURCE_GROUP(src\\util FILES ${UTIL})
 SOURCE_GROUP(src\\util\\detail FILES ${DETAIL})
 SOURCE_GROUP(src\\util\\tinyxml FILES ${TINYXML})
 SOURCE_GROUP(src\\graph FILES ${GRAPH})
+SOURCE_GROUP(src\\graph\\shader FILES ${GRAPH_SHADER})
 SOURCE_GROUP(src\\graph\\material FILES ${GRAPH_MATERIAL})
-SOURCE_GROUP(src\\graph\\material\\uniform FILES ${GRAPH_MATERIAL_UNIFORM})
 SOURCE_GROUP(src\\graph\\vertex_data FILES ${GRAPH_VERTEX_DATA})
 SOURCE_GROUP(src\\graph\\texture FILES ${GRAPH_TEXTURE})
 SOURCE_GROUP(src\\graph\\stage FILES ${GRAPH_STAGE})
@@ -172,6 +168,7 @@ ADD_EXECUTABLE(OEngine2D
 	${DETAIL}
 	${TINYXML}
 	${GRAPH}
+	${GRAPH_SHADER}
 	${GRAPH_MATERIAL}
 	${GRAPH_VERTEX_DATA}
 	${GRAPH_TEXTURE}

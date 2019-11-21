@@ -55,10 +55,10 @@ namespace oengine2d {
 		void Merge(const RenderState& rhs);
 		void Build();
 
-		inline VkPipelineRasterizationStateCreateInfo& GetRasterizationState() { return _rasterizationState; }
-		inline VkPipelineMultisampleStateCreateInfo& GetMultisampleState() { return _multisampleState; }
-		inline VkPipelineColorBlendAttachmentState& GetColorBlendAttachmentState() { return _colorBlendAttachmentState; }
-		inline VkPipelineColorBlendStateCreateInfo& GetColorBlendState() { return _colorBlendState; }
+		inline const VkPipelineRasterizationStateCreateInfo& GetRasterizationState() const { return _rasterizationState; }
+		inline const VkPipelineMultisampleStateCreateInfo& GetMultisampleState() const { return _multisampleState; }
+		inline const VkPipelineDepthStencilStateCreateInfo& GetDepthStencilState() const { return _depthStencilState; }
+		inline const VkPipelineColorBlendStateCreateInfo& GetColorBlendState() const { return _colorBlendState; }
 
 	private:
 		bool _enableBlend;
@@ -85,6 +85,7 @@ namespace oengine2d {
 
 		VkPipelineRasterizationStateCreateInfo _rasterizationState;
 		VkPipelineMultisampleStateCreateInfo _multisampleState;
+		VkPipelineDepthStencilStateCreateInfo _depthStencilState;
 		VkPipelineColorBlendAttachmentState _colorBlendAttachmentState;
 		VkPipelineColorBlendStateCreateInfo _colorBlendState;
 	};

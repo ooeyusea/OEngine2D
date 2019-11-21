@@ -6,7 +6,7 @@
 namespace oengine2d {
 	CommandBuffer::~CommandBuffer() {
 		if (_commandBuffer) {
-			vkFreeCommandBuffers(_device, *_commandPool, 1, &_commandBuffer);
+			vkFreeCommandBuffers(Graph::GetInstance().GetLogicalDevice(), *_commandPool, 1, &_commandBuffer);
 			_commandBuffer = nullptr;
 		}
 	}
@@ -20,7 +20,7 @@ namespace oengine2d {
 		allocInfo.level = level;
 		allocInfo.commandBufferCount = 1;
 
-		CHECK(vkAllocateCommandBuffers(_device, &allocInfo, &_commandBuffer) == VK_SUCCESS, "failed to allocate command buffers!");
+		CHECK(vkAllocateCommandBuffers(Graph::GetInstance().GetLogicalDevice(), &allocInfo, &_commandBuffer) == VK_SUCCESS, "failed to allocate command buffers!");
 
 		return true;
 	}
@@ -62,14 +62,15 @@ namespace oengine2d {
 		VkFenceCreateInfo fenceCreateInfo = {};
 		fenceCreateInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
 
+		auto& device = Graph::GetInstance().GetLogicalDevice();
 		VkFence fence;
-		vkCreateFence(_device, &fenceCreateInfo, nullptr, &fence);
+		vkCreateFence(device, &fenceCreateInfo, nullptr, &fence);
 
-		vkResetFences(_device, 1, &fence);
-		vkQueueSubmit(_device.GetGraphicsQueue(), 1, &submitInfo, fence);
-		vkWaitForFences(_device, 1, &fence, VK_TRUE, std::numeric_limits<uint64_t>::max());
+		vkResetFences(device, 1, &fence);
+		vkQueueSubmit(device.GetGraphicsQueue(), 1, &submitInfo, fence);
+		vkWaitForFences(device, 1, &fence, VK_TRUE, std::numeric_limits<uint64_t>::max());
 
-		vkDestroyFence(_device, fence, nullptr);
+		vkDestroyFence(device, fence, nullptr);
 		return true;
 	}
 
@@ -91,7 +92,7 @@ namespace oengine2d {
 			submitInfo.pSignalSemaphores = &singalSemaphore;
 		}
 
-		CHECK(vkQueueSubmit(_device.GetGraphicsQueue(), 1, &submitInfo, inFlightFence) == VK_SUCCESS, "failed to create synchronization objects for a frame!");
+		CHECK(vkQueueSubmit(Graph::GetInstance().GetLogicalDevice().GetGraphicsQueue(), 1, &submitInfo, inFlightFence) == VK_SUCCESS, "failed to create synchronization objects for a frame!");
 		return true;
 	}
 }

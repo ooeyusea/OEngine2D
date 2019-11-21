@@ -8,7 +8,7 @@
 namespace fs = std::experimental::filesystem;
 
 namespace oengine2d {
-	const std::vector<VkDynamicState> DYNAMIC_STATES = { VK_DYNAMIC_STATE_VIEWPORT, VK_DYNAMIC_STATE_SCISSOR, VK_DYNAMIC_STATE_LINE_WIDTH };
+	const std::vector<VkDynamicState> DYNAMIC_STATES = { VK_DYNAMIC_STATE_VIEWPORT, VK_DYNAMIC_STATE_SCISSOR };
 	class ShaderIncluder : public glslang::TShader::Includer {
 	public:
 		IncludeResult* includeLocal(const char* headerName, const char* includerName, size_t inclusionDepth) override {
@@ -58,7 +58,6 @@ namespace oengine2d {
 			return EShLangCount;
 		}
 	}
-
 
 	TBuiltInResource GetResources() {
 		TBuiltInResource resources = {};
@@ -167,7 +166,7 @@ namespace oengine2d {
 
 		VkPipelineInputAssemblyStateCreateInfo inputAssembly = {};
 		inputAssembly.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
-		inputAssembly.topology = _topology;
+		inputAssembly.topology = _desc->GetTopology();
 		inputAssembly.primitiveRestartEnable = VK_FALSE;
 
 		VkPipelineViewportStateCreateInfo viewportState = {};
@@ -176,49 +175,6 @@ namespace oengine2d {
 		viewportState.pViewports = nullptr;
 		viewportState.scissorCount = 1;
 		viewportState.pScissors = nullptr;
-
-		VkPipelineRasterizationStateCreateInfo rasterizer = {};
-		rasterizer.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
-		rasterizer.depthClampEnable = _depthClamp ? VK_TRUE : VK_FALSE;
-		rasterizer.rasterizerDiscardEnable = _rasterizerDiscard ? VK_TRUE : VK_FALSE;
-		rasterizer.polygonMode = _polygonMode;
-		rasterizer.lineWidth = _lineWidth;
-		rasterizer.cullMode = _cullMode;
-		rasterizer.frontFace = _frontFace;
-		rasterizer.depthBiasEnable = _rasterizerDiscard ? VK_TRUE : VK_FALSE;
-		rasterizer.depthBiasConstantFactor = _depthBiasConstantFactor;
-		rasterizer.depthBiasClamp = _depthBiasClamp;
-		rasterizer.depthBiasSlopeFactor = _depthBiasSlopeFactor;
-
-		VkPipelineMultisampleStateCreateInfo multisampling = {};
-		multisampling.sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
-		multisampling.sampleShadingEnable = VK_FALSE;
-		multisampling.rasterizationSamples = VK_SAMPLE_COUNT_1_BIT;
-		multisampling.minSampleShading = 1.0f; // Optional
-		multisampling.pSampleMask = nullptr; // Optional
-		multisampling.alphaToCoverageEnable = VK_FALSE; // Optional
-		multisampling.alphaToOneEnable = VK_FALSE; // Optional
-
-		VkPipelineColorBlendAttachmentState colorBlendAttachment = {};
-		colorBlendAttachment.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
-		colorBlendAttachment.blendEnable = VK_FALSE;
-		colorBlendAttachment.srcColorBlendFactor = VK_BLEND_FACTOR_ONE; // Optional
-		colorBlendAttachment.dstColorBlendFactor = VK_BLEND_FACTOR_ZERO; // Optional
-		colorBlendAttachment.colorBlendOp = VK_BLEND_OP_ADD; // Optional
-		colorBlendAttachment.srcAlphaBlendFactor = VK_BLEND_FACTOR_ONE; // Optional
-		colorBlendAttachment.dstAlphaBlendFactor = VK_BLEND_FACTOR_ZERO; // Optional
-		colorBlendAttachment.alphaBlendOp = VK_BLEND_OP_ADD; // Optional
-
-		VkPipelineColorBlendStateCreateInfo colorBlending = {};
-		colorBlending.sType = VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO;
-		colorBlending.logicOpEnable = VK_FALSE;
-		colorBlending.logicOp = VK_LOGIC_OP_COPY; // Optional
-		colorBlending.attachmentCount = 1;
-		colorBlending.pAttachments = &colorBlendAttachment;
-		colorBlending.blendConstants[0] = 0.0f; // Optional
-		colorBlending.blendConstants[1] = 0.0f; // Optional
-		colorBlending.blendConstants[2] = 0.0f; // Optional
-		colorBlending.blendConstants[3] = 0.0f; // Optional
 
 		std::vector<VkDescriptorSetLayoutBinding> descriptorSetLayouts;
 		for (const auto& [uniformBlockName, uniformBlock] : _uniformBlocks) {
@@ -257,12 +213,12 @@ namespace oengine2d {
 			case 0x904D: // GL_IMAGE_2D
 			case 0x9108: // GL_SAMPLER_2D_MULTISAMPLE
 			case 0x9055: // GL_IMAGE_2D_MULTISAMPLE
-				descriptorSetLayoutBinding.descriptorType = uniform._writeOnly ? VK_DESCRIPTOR_TYPE_STORAGE_IMAGE : VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;;
+				descriptorSetLayoutBinding.descriptorType = uniform._writeOnly ? VK_DESCRIPTOR_TYPE_STORAGE_IMAGE : VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
 				descriptorSetLayouts.emplace_back(descriptorSetLayoutBinding);
 				break;
 			case 0x8B60: // GL_SAMPLER_CUBE
 			case 0x9050: // GL_IMAGE_CUBE
-				descriptorSetLayoutBinding.descriptorType = uniform._writeOnly ? VK_DESCRIPTOR_TYPE_STORAGE_IMAGE : VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;;
+				descriptorSetLayoutBinding.descriptorType = uniform._writeOnly ? VK_DESCRIPTOR_TYPE_STORAGE_IMAGE : VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
 				descriptorSetLayouts.emplace_back(descriptorSetLayoutBinding);
 				break;
 			default:
@@ -298,10 +254,10 @@ namespace oengine2d {
 		pipelineInfo.pVertexInputState = &vertexInputInfo;
 		pipelineInfo.pInputAssemblyState = &inputAssembly;
 		pipelineInfo.pViewportState = &viewportState;
-		pipelineInfo.pRasterizationState = &rasterizer;
-		pipelineInfo.pMultisampleState = &multisampling;
-		pipelineInfo.pDepthStencilState = nullptr; // Optional
-		pipelineInfo.pColorBlendState = &colorBlending;
+		pipelineInfo.pRasterizationState = &_state.GetRasterizationState();
+		pipelineInfo.pMultisampleState = &_state.GetMultisampleState();
+		pipelineInfo.pDepthStencilState = &_state.GetDepthStencilState(); // Optional
+		pipelineInfo.pColorBlendState = &_state.GetColorBlendState();
 		pipelineInfo.pDynamicState = &dynamicState; // Optional
 		pipelineInfo.layout = _pipelineLayout;
 		pipelineInfo.renderPass = _stage;
@@ -459,6 +415,7 @@ namespace oengine2d {
 			}
 
 			_uniformBlocks.emplace(reflection.name, UniformBlock(reflection.getBinding(), reflection.size, stageFlag, type));
+			_descriptorLocations.emplace(reflection.name, reflection.getBinding());
 		}
 	}
 
@@ -490,6 +447,7 @@ namespace oengine2d {
 
 			auto& qualifier = reflection.getType()->getQualifier();
 			_uniforms.emplace(reflection.name, Uniform(reflection.getBinding(), reflection.offset, -1, reflection.glDefineType, qualifier.readonly, qualifier.writeonly, stageFlag));
+			_descriptorLocations.emplace(reflection.name, reflection.getBinding());
 		}
 	}
 

@@ -106,7 +106,18 @@ namespace oengine2d {
 		void AddShader(std::string source, VkShaderStageFlags flag, const std::string& defines = "");
 		void SetVertex(VertexDescription* desc) { _desc = desc; }
 
-		operator const VkPipeline& () const { return _graphicsPipeline; }
+		inline operator const VkPipeline& () const { return _graphicsPipeline; }
+		inline const VkPipelineLayout& GetPipelineLayout() const { return _pipelineLayout; }
+		inline const VkDescriptorSetLayout& GetDescriptorSetLayout() const { return _descriptorSetLayout; }
+		inline const VkDescriptorPool& GetDescriptorPool() const { return _descritproPool; }
+
+		inline std::optional<uint32_t> GetDescriptorLocation(const std::string& name) const {
+			auto itr = _descriptorLocations.find(name);
+			if (itr == _descriptorLocations.end())
+				return std::nullopt;
+
+			return itr->second;
+		}
 
 	private:
 		VkShaderModule CreateShader(VkDevice device, const std::string& sourceName, VkShaderStageFlags flag, const char * entry, const std::string& source, const std::string& defines);
@@ -131,8 +142,10 @@ namespace oengine2d {
 		VkDescriptorSetLayout _descriptorSetLayout = nullptr;
 		VkPipelineLayout _pipelineLayout = nullptr;
 		VkPipeline _graphicsPipeline = nullptr;
+		VkDescriptorPool _descritproPool = nullptr;
 
 		std::map<std::string, Uniform> _uniforms;
 		std::map<std::string, UniformBlock> _uniformBlocks;
+		std::map<std::string, uint32_t> _descriptorLocations;
 	};
 }

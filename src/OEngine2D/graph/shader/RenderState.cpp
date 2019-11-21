@@ -60,16 +60,16 @@ namespace oengine2d {
 
 	void RenderState::Build() {
 		_rasterizationState.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
-		_rasterizationState.depthClampEnable = _depthClamp ? VK_TRUE : VK_FALSE;
-		_rasterizationState.rasterizerDiscardEnable = _rasterizerDiscard ? VK_TRUE : VK_FALSE;
-		_rasterizationState.polygonMode = _polygonMode;
-		_rasterizationState.lineWidth = _lineWidth;
-		_rasterizationState.cullMode = _cullMode;
-		_rasterizationState.frontFace = _frontFace;
-		_rasterizationState.depthBiasEnable = _rasterizerDiscard ? VK_TRUE : VK_FALSE;
-		_rasterizationState.depthBiasConstantFactor = _depthBiasConstantFactor;
-		_rasterizationState.depthBiasClamp = _depthBiasClamp;
-		_rasterizationState.depthBiasSlopeFactor = _depthBiasSlopeFactor;
+		_rasterizationState.depthClampEnable = VK_FALSE;
+		_rasterizationState.rasterizerDiscardEnable =  VK_FALSE;
+		_rasterizationState.polygonMode = VK_POLYGON_MODE_FILL;
+		_rasterizationState.lineWidth = 1.0f;
+		_rasterizationState.cullMode = VK_CULL_MODE_BACK_BIT;
+		_rasterizationState.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
+		_rasterizationState.depthBiasEnable = VK_FALSE;
+		_rasterizationState.depthBiasConstantFactor = 0.f;
+		_rasterizationState.depthBiasClamp = 0.f;
+		_rasterizationState.depthBiasSlopeFactor = 0.f;
 
 		_multisampleState.sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
 		_multisampleState.sampleShadingEnable = VK_FALSE;
@@ -92,7 +92,7 @@ namespace oengine2d {
 		_colorBlendState.logicOpEnable = VK_FALSE;
 		_colorBlendState.logicOp = VK_LOGIC_OP_COPY; // Optional
 		_colorBlendState.attachmentCount = 1;
-		_colorBlendState.pAttachments = &colorBlendAttachment;
+		_colorBlendState.pAttachments = &_colorBlendAttachmentState;
 		_colorBlendState.blendConstants[0] = 0.0f; // Optional
 		_colorBlendState.blendConstants[1] = 0.0f; // Optional
 		_colorBlendState.blendConstants[2] = 0.0f; // Optional
