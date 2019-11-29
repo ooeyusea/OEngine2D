@@ -2,7 +2,7 @@
 
 #include "util.h"
 #include "ShaderProperty.h"
-#include "../Resource.h"
+#include "../resource/Resource.h"
 #include "tinyxml/tinyxml.h"
 
 namespace oengine2d {
@@ -18,7 +18,7 @@ namespace oengine2d {
 		Shader(const std::string& path) : Resource(ResourceType::RT_SHADER, path) {}
 		~Shader() {}
 
-		virtual bool Load(const char* data, const uint32_t size);
+		virtual bool Load();
 
 		void RecordCommand(uint32_t frame, Renderable& object, const PropertyHandler& handler, const std::string& stage, CommandBuffer& cmd);
 		

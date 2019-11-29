@@ -1,6 +1,8 @@
 #pragma once
 
 #include "util.h"
+#include "tinyxml/tinyxml.h"
+#include "singleton.h"
 
 namespace oengine2d {
 	class ShaderProperty {
@@ -45,6 +47,7 @@ namespace oengine2d {
 		virtual ShaderProperty* Clone() { return new TShaderProperty(_name, _a); }
 
 		inline const T& Get() const { return _a; }
+		inline void Set(T& a) { _a = a; }
 
 	private:
 		T _a;
@@ -102,5 +105,10 @@ namespace oengine2d {
 			std::swap(*this, other);
 			return *this;
 		}
+	};
+
+	class ShaderPropertyLoader : public Singleton<ShaderPropertyLoader> {
+	public:
+		ShaderProperty* Load(TiXmlElement* el, ShaderProperty* prop = nullptr);
 	};
 }

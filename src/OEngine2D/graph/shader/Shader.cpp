@@ -4,11 +4,17 @@
 #include "tinyxml/tinyxml.h"
 #include "Pass.h"
 #include "RenderState.h"
+#include "../../system/FileSystem.h"
 
 namespace oengine2d {
-	bool Shader::Load(const char* data, const uint32_t size) {
+	bool Shader::Load() {
+		std::string data;
+		if (!FileSystem::GetInstance().ReadFile(_path, data)) {
+			return false;
+		}
+
 		TiXmlDocument doc;
-		doc.Parse(data);
+		doc.Parse(data.c_str());
 		if (doc.Error()) {
 			return false;
 		}
@@ -21,7 +27,7 @@ namespace oengine2d {
 			}
 		}
 
-		for (TiXmlElement* el = properties->FirstChildElement("subshader"); el != nullptr; el = el->NextSiblingElement("subshader")) {
+		for (TiXmlElement* el = doc.FirstChildElement()->FirstChildElement("subshader"); el != nullptr; el = el->NextSiblingElement("subshader")) {
 			if (!ParseSubshader(el))
 				return false;
 		}

@@ -1,6 +1,6 @@
 #pragma once
 #include "util.h"
-#include "../Resource.h"
+#include "../resource/Resource.h"
 #include "../shader/PropertyHandler.h"
 
 namespace oengine2d {
@@ -12,7 +12,7 @@ namespace oengine2d {
 		Material(const std::string& path, Shader* shader);
 		~Material();
 
-		virtual bool Load(const char* data, const uint32_t size);
+		virtual bool Load();
 
 		void RecordCommand(uint32_t frame, Renderable& object, const std::string& stage, CommandBuffer& cmd);
 

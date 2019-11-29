@@ -76,6 +76,8 @@ extern "C" {
 #include <functional>
 #include <algorithm>
 
+#include "tinyxml/tinyxml.h"
+
 #define CHECK(p, msg) \
 	if (!(p)) {\
 		std::cout << msg << std::endl; \

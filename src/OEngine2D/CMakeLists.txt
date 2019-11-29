@@ -47,7 +47,6 @@ SET(DETAIL
 ENDIF(UNIX)
 
 SET(GRAPH
-	"${CMAKE_CURRENT_SOURCE_DIR}/graph/Resource.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/graph/Graph.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/graph/Graph.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/graph/DrawAble.h"
@@ -136,6 +135,12 @@ SET(GRAPH_STAGE
     "${CMAKE_CURRENT_SOURCE_DIR}/graph/stage/RenderStageBuilder.cpp"
 )
 
+SET(GRAPH_RESOURCE
+	"${CMAKE_CURRENT_SOURCE_DIR}/graph/resource/Resource.h"
+	"${CMAKE_CURRENT_SOURCE_DIR}/graph/resource/ResourceMgr.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/graph/resource/ResourceMgr.cpp"
+)
+
 SET(SYS
     "${CMAKE_CURRENT_SOURCE_DIR}/system/FileSystem.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/system/FileSystem.cpp"
@@ -158,6 +163,7 @@ SOURCE_GROUP(src\\graph\\material FILES ${GRAPH_MATERIAL})
 SOURCE_GROUP(src\\graph\\vertex_data FILES ${GRAPH_VERTEX_DATA})
 SOURCE_GROUP(src\\graph\\texture FILES ${GRAPH_TEXTURE})
 SOURCE_GROUP(src\\graph\\stage FILES ${GRAPH_STAGE})
+SOURCE_GROUP(src\\graph\\resource FILES ${GRAPH_RESOURCE})
 SOURCE_GROUP(src\\system FILES ${SYS})
 SOURCE_GROUP(src FILES ${KERNEL})
 SOURCE_GROUP(resources\\shader FILES ${RESOURCES_SHADER})
@@ -173,7 +179,7 @@ ADD_EXECUTABLE(OEngine2D
 	${GRAPH_VERTEX_DATA}
 	${GRAPH_TEXTURE}
 	${GRAPH_STAGE}
-	${GRAPH_MATERIAL_UNIFORM}
+	${GRAPH_RESOURCE}
 	${SYS}
     ${KERNEL}
 	${RESOURCES_SHADER}
